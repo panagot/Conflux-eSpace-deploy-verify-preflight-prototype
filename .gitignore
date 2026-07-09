@@ -10,7 +10,7 @@ core-dist/
 
 # Local dev / grant research — not published
 DESIGN_PROMPT.md
-scripts/
+/scripts/
 cli/
 server/
 core/src/**/*.test.ts
