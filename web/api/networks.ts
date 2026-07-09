@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { NETWORKS, PUBLIC_RPC_ALTERNATIVES } from '../../core/dist/index.js'
+import { NETWORKS, PUBLIC_RPC_ALTERNATIVES } from '@verifyflow/core/networks'
 
 export default function handler(_req: VercelRequest, res: VercelResponse) {
   res.setHeader('Cache-Control', 's-maxage=300')

@@ -23,9 +23,15 @@ export function useDoctor() {
 
   useEffect(() => {
     fetch('/api/networks')
-      .then((r) => r.json())
-      .then((data: { networks: NetworkInfo[] }) => setNetworks(data.networks))
-      .catch(() => setError('API unreachable — start server on :8792'))
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`)
+        return r.json()
+      })
+      .then((data: { networks: NetworkInfo[] }) => {
+        setNetworks(data.networks)
+        setError(null)
+      })
+      .catch(() => setError('API unreachable — retry or check Vercel function logs'))
   }, [])
 
   const selected = networks.find((n) => n.id === network)

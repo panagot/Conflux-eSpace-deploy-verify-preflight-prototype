@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { lintVerifyPayload, lintVerifyPayloadJson } from '../core/dist/index.js'
+import { lintVerifyPayload, lintVerifyPayloadJson } from '@verifyflow/core'
 
 export default function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
