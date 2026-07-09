@@ -1,7 +1,7 @@
 {
   "version": 2,
   "installCommand": "npm install",
-  "buildCommand": "npm run build:vercel",
+  "buildCommand": "npm run build -w @verifyflow/core && npm run build -w @verifyflow/web",
   "outputDirectory": "web/dist",
   "rewrites": [
     { "source": "/((?!api/).*)", "destination": "/index.html" }

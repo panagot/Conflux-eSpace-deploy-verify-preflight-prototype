@@ -21,8 +21,11 @@ npm run dev
 ## Deploy (Vercel)
 
 1. Import this repository in [Vercel](https://vercel.com)
-2. Framework preset: **Vite** (or Other — uses `vercel.json`)
-3. Deploy — API routes run as serverless functions under `/api/*`
+2. **Root Directory:** leave **empty** (repository root — required for `/api` routes)
+3. Framework preset: **Other** (uses `vercel.json`; do not set Root Directory to `web`)
+4. Deploy — build runs `core` then `web`; API routes deploy as serverless functions
+
+If build fails with "Missing script build:vercel", clear **Root Directory** in Project Settings → General.
 
 ## What it checks
 

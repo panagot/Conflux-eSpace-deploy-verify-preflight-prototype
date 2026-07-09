@@ -9,7 +9,7 @@
     "web"
   ],
   "scripts": {
-    "build:vercel": "npm run build --workspace=core && npm run build --workspace=web",
+    "build:vercel": "npm run build -w @verifyflow/core && npm run build -w @verifyflow/web",
     "build": "npm run build:vercel",
     "dev": "npm run build --workspace=core && npx vercel dev --listen 5180",
     "preview:web": "npm run build:vercel && npm run preview --workspace=web"
