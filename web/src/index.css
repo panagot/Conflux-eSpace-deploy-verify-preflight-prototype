@@ -1,0 +1,64 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Sora', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --color-surface-0: oklch(0.14 0.02 220);
+  --color-surface-1: oklch(0.18 0.025 215);
+  --color-surface-2: oklch(0.22 0.03 210);
+  --color-border: oklch(0.32 0.04 190 / 0.35);
+  --color-text: oklch(0.92 0.01 220);
+  --color-text-muted: oklch(0.65 0.02 220);
+  --color-text-dim: oklch(0.5 0.02 220);
+  --color-accent: oklch(0.72 0.14 175);
+  --color-accent-secondary: oklch(0.62 0.12 230);
+  --color-pass: oklch(0.72 0.13 160);
+  --color-warn: oklch(0.78 0.14 85);
+  --color-fail: oklch(0.62 0.18 25);
+  --color-skip: oklch(0.55 0.02 220);
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--color-text);
+  background: var(--color-surface-0);
+  -webkit-font-smoothing: antialiased;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+::selection {
+  background: oklch(0.72 0.14 175 / 0.25);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
