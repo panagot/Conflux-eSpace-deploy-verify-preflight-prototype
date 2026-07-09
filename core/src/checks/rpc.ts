@@ -11,7 +11,7 @@ export async function checkRpcReachability(
   try {
     const [blockNumber, chainId, networkVersion] = await Promise.all([
       provider.getBlockNumber(),
-      provider.getNetwork().then((n) => Number(n.chainId)),
+      provider.getNetwork().then((n: { chainId: bigint }) => Number(n.chainId)),
       provider.send('net_version', []).catch(() => null),
     ])
 

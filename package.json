@@ -8,6 +8,11 @@
     "core",
     "web"
   ],
+  "dependencies": {
+    "@verifyflow/core": "0.1.0",
+    "ethers": "^6.13.5",
+    "@vercel/node": "^5.0.0"
+  },
   "scripts": {
     "build:vercel": "npm run build -w @verifyflow/core && npm run build -w @verifyflow/web",
     "build": "npm run build:vercel",
@@ -15,7 +20,7 @@
     "preview:web": "npm run build:vercel && npm run preview --workspace=web"
   },
   "devDependencies": {
-    "@vercel/node": "^5.0.0",
-    "concurrently": "^9.1.2"
+    "concurrently": "^9.1.2",
+    "typescript": "^5.7.2"
   }
 }
