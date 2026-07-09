@@ -6,11 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "build:vercel": "npm --prefix .. run build -w @verifyflow/core && npm run build",
+    "build:vercel": "npm --prefix .. run build -w @verifyflow/core && node scripts/copy-core-dist.mjs && npm run build",
     "preview": "vite preview"
   },
   "dependencies": {
     "@verifyflow/core": "0.1.0",
+    "ethers": "^6.13.5",
     "@fontsource/jetbrains-mono": "^5.2.8",
     "@fontsource/sora": "^5.2.8",
     "@monaco-editor/react": "^4.7.0",

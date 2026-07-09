@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { runDoctor, NETWORKS, type NetworkId } from '@verifyflow/core'
+import { runDoctor, NETWORKS, type NetworkId } from '../core-dist/index.js'
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
