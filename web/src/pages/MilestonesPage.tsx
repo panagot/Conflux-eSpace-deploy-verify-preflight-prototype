@@ -36,7 +36,7 @@ export function MilestonesPage() {
         </div>
         <div className="rounded-lg border border-border bg-surface-1 p-4">
           <p className="font-mono text-[10px] uppercase tracking-wider text-text-dim">Post-grant</p>
-          <p className="mt-1 text-sm text-text-muted">12 months maintenance · open GitHub · official site</p>
+          <p className="mt-1 text-sm text-text-muted">12 months maintenance · public MIT repo · official site</p>
         </div>
       </div>
 

@@ -1,0 +1,7 @@
+{
+  "compilerVersion": "v0.8.24+commit.e11b9ed9",
+  "optimizationUsed": true,
+  "runs": 200,
+  "contractName": "MyToken",
+  "evmVersion": "default"
+}

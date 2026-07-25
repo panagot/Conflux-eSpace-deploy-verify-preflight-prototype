@@ -31,23 +31,10 @@ export function DashboardPage() {
     lintOnly,
   } = useDoctorContext()
 
-  const chainId = selected?.chainId ?? (network === 'mainnet' ? 1030 : 71)
   const pinnedFail = report && !report.ready ? firstFailMessage(report.checks) : null
 
   return (
     <>
-      <div className="border-b border-border bg-surface-1/60 px-4 py-2 md:px-8">
-        <p className="mx-auto max-w-[1400px] font-mono text-[11px] text-text-muted">
-          <span className="text-text-dim">CFX-01 · Integration Grants</span>
-          <span className="mx-2 text-border">|</span>
-          eSpace preflight
-          <span className="mx-2 text-border">|</span>
-          chainId {chainId}
-          <span className="mx-2 text-border">|</span>
-          ConfluxScan lint
-        </p>
-      </div>
-
       <main className="mx-auto grid w-full max-w-[1400px] flex-1 grid-cols-1 gap-6 px-4 py-6 lg:grid-cols-[38%_62%] lg:gap-8 lg:px-8">
         <aside className="space-y-6 lg:sticky lg:top-20 lg:self-start">
           <NetworkControl
@@ -87,7 +74,7 @@ export function DashboardPage() {
               {loading && mode === 'payload' ? 'Linting…' : 'Lint payload only'}
             </button>
             <p className="text-center font-mono text-[10px] text-text-dim">
-              Ctrl+Enter to run preflight
+              Ctrl+Enter = full preflight
             </p>
           </div>
 
@@ -102,7 +89,10 @@ export function DashboardPage() {
         <section className="space-y-5">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <h2 className="flex items-center gap-2 text-sm font-semibold text-text">
+              <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-text-dim">
+                Preflight before ConfluxScan verify
+              </p>
+              <h2 className="mt-1 flex items-center gap-2 text-sm font-semibold text-text">
                 Preflight rail
                 <Tooltip content="Checks run left-to-right: RPC reachability, chain ID, gas data, ConfluxScan API, then verify-payload lint." />
               </h2>
@@ -141,31 +131,39 @@ export function DashboardPage() {
                   }
                 />
               </h2>
-              {report && (
-                <div className="flex flex-wrap gap-3 font-mono text-[11px]">
-                  <span className="text-pass">{report.summary.pass} pass</span>
-                  <span className="text-warn">{report.summary.warn} warn</span>
-                  <span className="text-fail">{report.summary.fail} fail</span>
-                  <span className="text-skip">{report.summary.skip} skip</span>
-                  <span className="text-text-dim">
-                    {report.network} · {new Date(report.ranAt).toLocaleTimeString()}
-                  </span>
-                </div>
-              )}
             </div>
 
             {loading && <Skeleton />}
 
             {!loading && report && (
-              <CheckStream checks={report.checks} pinnedFail={pinnedFail} />
+              <CheckStream
+                checks={report.checks}
+                pinnedFail={pinnedFail}
+                network={report.network}
+                ranAt={report.ranAt}
+                summary={report.summary}
+              />
             )}
 
             {!loading && !report && (
-              <p className="text-sm text-text-muted">
-                No preflight run yet. Select testnet and execute preflight, or use{' '}
-                <code className="font-mono text-xs text-accent">npm run doctor:testnet</code> from
-                the CLI.
-              </p>
+              <div className="rounded-lg border border-dashed border-border bg-surface-1/70 px-4 py-5">
+                <p className="text-sm text-text">Waiting for first preflight</p>
+                <p className="mt-1.5 max-w-[52ch] text-sm text-text-muted">
+                  Pick a network, keep or edit the verify payload, then{' '}
+                  <strong className="text-text">Run preflight</strong>. The sample JSON includes{' '}
+                  <code className="font-mono text-xs text-warn">evmVersion: &quot;default&quot;</code>{' '}
+                  so you can see a ConfluxScan reject (
+                  <a
+                    href={LINKS.confluxSkillsIssue}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-accent underline"
+                  >
+                    conflux-skills #5
+                  </a>
+                  ).
+                </p>
+              </div>
             )}
           </div>
         </section>

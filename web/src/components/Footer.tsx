@@ -42,10 +42,20 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <a href={LINKS.github} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 transition-colors hover:text-accent">
+                <a
+                  href={LINKS.grantsForumApp}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1 transition-colors hover:text-accent"
+                >
                   <GithubLogo size={14} />
-                  GitHub
+                  Grant application
                 </a>
+              </li>
+              <li>
+                <span className="text-xs text-text-dim">
+                  Public MIT repo ships at funded kickoff
+                </span>
               </li>
             </ul>
           </div>

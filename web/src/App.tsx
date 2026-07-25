@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { DoctorProvider, useDoctorContext } from './context/DoctorContext'
 import { TopBar } from './components/TopBar'
 import { Footer } from './components/Footer'
+import { AssistantFab } from './components/AssistantFab'
 import { DashboardPage } from './pages/DashboardPage'
 import { UsagePage } from './pages/UsagePage'
 import { MilestonesPage } from './pages/MilestonesPage'
@@ -18,6 +19,7 @@ function AppShell() {
         <Route path="/milestones" element={<MilestonesPage />} />
       </Routes>
       <Footer />
+      <AssistantFab />
     </div>
   )
 }

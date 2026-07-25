@@ -133,6 +133,50 @@ export function useDoctor() {
     return () => window.removeEventListener('keydown', onKey)
   }, [loading, runDoctor])
 
+  // Avoid stale "testnet" labels after the reviewer switches network without re-running.
+  useEffect(() => {
+    setReport(null)
+    setError(null)
+  }, [network])
+
+  const loadFailDemo = useCallback(() => {
+    setPayloadRaw(SAMPLE_PAYLOAD)
+    setIncludePayload(true)
+    setJsonError(null)
+    setError(null)
+  }, [])
+
+  const runFailDemo = useCallback(async () => {
+    setPayloadRaw(SAMPLE_PAYLOAD)
+    setIncludePayload(true)
+    setJsonError(null)
+    setLoading(true)
+    setError(null)
+    try {
+      const verifyPayload = JSON.parse(SAMPLE_PAYLOAD) as Record<string, unknown>
+      const res = await fetch('/api/doctor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          network,
+          rpcUrl: rpcUrl.trim() || undefined,
+          verifyPayload,
+        }),
+      })
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}))
+        throw new Error(body.error ?? `HTTP ${res.status}`)
+      }
+      const data = (await res.json()) as DoctorReport
+      setReport(data)
+      setMode('doctor')
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Run failed')
+    } finally {
+      setLoading(false)
+    }
+  }, [network, rpcUrl])
+
   return {
     networks,
     network,
@@ -152,5 +196,7 @@ export function useDoctor() {
     runDoctor,
     lintOnly,
     validateJson,
+    loadFailDemo,
+    runFailDemo,
   }
 }

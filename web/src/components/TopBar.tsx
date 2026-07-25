@@ -21,11 +21,11 @@ export function TopBar({ network, selected }: Props) {
       : 'text-text-muted hover:text-text'
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-surface-0/90 backdrop-blur-md">
-      <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-4 py-3 md:px-8">
-        <Link to="/" className="flex items-center gap-3 transition-opacity hover:opacity-90">
+    <header className="sticky top-0 z-40 border-b border-border bg-surface-0/92 backdrop-blur-md">
+      <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-4 py-3.5 md:px-8">
+        <Link to="/" className="flex min-w-0 items-center gap-3 transition-opacity hover:opacity-90">
           <div
-            className="flex h-9 w-9 items-center justify-center rounded border border-border text-accent"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-accent/35 bg-accent/10 text-accent"
             aria-hidden
           >
             <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none">
@@ -39,29 +39,30 @@ export function TopBar({ network, selected }: Props) {
               <circle cx="12" cy="14" r="1.5" fill="currentColor" />
             </svg>
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-base font-semibold tracking-tight">VerifyFlow</span>
-              <span className="font-mono text-[10px] uppercase tracking-widest text-text-dim">
+          <div className="min-w-0">
+            <div className="flex items-baseline gap-2">
+              <span className="text-base font-semibold tracking-tight text-text">VerifyFlow</span>
+              <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-text-dim">
                 CFX-01
               </span>
             </div>
-            <p className="text-xs text-text-muted">eSpace deploy &amp; verify preflight</p>
+            <p className="truncate text-xs text-text-muted">eSpace deploy &amp; verify preflight</p>
           </div>
         </Link>
 
-        <div className="flex items-center gap-2 sm:gap-4">
-          <span className="hidden rounded border border-border bg-surface-1 px-2.5 py-1 font-mono text-xs text-accent sm:inline">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <span className="hidden items-center gap-1.5 rounded-md border border-accent/30 bg-accent/8 px-2.5 py-1 font-mono text-xs text-accent sm:inline-flex">
+            <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden />
             chainId {chainId}
           </span>
 
-          <nav className="flex items-center gap-1 text-sm sm:gap-3">
-            <Link to="/" className={`hidden px-2 py-1 sm:inline ${navClass('/')}`}>
+          <nav className="flex items-center gap-0.5 text-sm sm:gap-1">
+            <Link to="/" className={`hidden rounded-md px-2.5 py-1.5 sm:inline ${navClass('/')}`}>
               Dashboard
             </Link>
             <Link
               to="/usage"
-              className={`flex items-center gap-1 px-2 py-1 ${navClass('/usage')}`}
+              className={`flex items-center gap-1 rounded-md px-2.5 py-1.5 ${navClass('/usage')}`}
             >
               <BookOpen size={14} className="sm:hidden" />
               <span className="hidden sm:inline">Usage</span>
@@ -72,7 +73,7 @@ export function TopBar({ network, selected }: Props) {
                 type="button"
                 onClick={() => setMilestonesOpen(!milestonesOpen)}
                 onBlur={() => setTimeout(() => setMilestonesOpen(false), 150)}
-                className={`flex items-center gap-1 px-2 py-1 ${location.pathname === '/milestones' ? 'text-accent' : 'text-text-muted hover:text-text'}`}
+                className={`flex items-center gap-1 rounded-md px-2.5 py-1.5 ${location.pathname === '/milestones' ? 'text-accent' : 'text-text-muted hover:text-text'}`}
               >
                 <List size={14} />
                 <span className="hidden sm:inline">Milestones</span>
@@ -113,7 +114,7 @@ export function TopBar({ network, selected }: Props) {
               href={LINKS.espaceDeveloperQuickstart}
               target="_blank"
               rel="noreferrer"
-              className="hidden items-center gap-1.5 px-2 py-1 text-text-muted transition-colors hover:text-accent lg:flex"
+              className="hidden items-center gap-1.5 rounded-md px-2.5 py-1.5 text-text-muted transition-colors hover:text-accent lg:flex"
             >
               <Terminal size={14} weight="duotone" />
               eSpace docs
@@ -122,7 +123,7 @@ export function TopBar({ network, selected }: Props) {
               href={LINKS.grantsForum}
               target="_blank"
               rel="noreferrer"
-              className="hidden items-center gap-1.5 px-2 py-1 text-text-muted transition-colors hover:text-accent md:flex"
+              className="hidden items-center gap-1.5 rounded-md px-2.5 py-1.5 text-text-muted transition-colors hover:text-accent md:flex"
             >
               <GitBranch size={14} weight="duotone" />
               Grants
