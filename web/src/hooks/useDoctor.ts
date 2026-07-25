@@ -50,6 +50,8 @@ export function useDoctor() {
   const runDoctor = useCallback(async () => {
     setLoading(true)
     setError(null)
+    setReport(null)
+    setMode('doctor')
     try {
       let verifyPayload: Record<string, unknown> | undefined
       if (includePayload && payloadRaw.trim()) {
@@ -88,6 +90,8 @@ export function useDoctor() {
   const lintOnly = useCallback(async () => {
     setLoading(true)
     setError(null)
+    setReport(null)
+    setMode('payload')
     if (!validateJson(payloadRaw)) {
       setLoading(false)
       return

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import {
   CheckCircle,
@@ -7,12 +8,14 @@ import {
   ArrowSquareOut,
   Lightbulb,
   Clock,
+  CaretDown,
 } from '@phosphor-icons/react'
 import type { CheckResult } from '../types'
 import {
   RAIL_PHASES,
   checksForPhase,
   formatDuration,
+  phaseForCheckId,
   type RailPhase,
 } from '../lib/checkPhases'
 import { LINKS } from '../lib/links'
@@ -22,36 +25,34 @@ type Props = {
   pinnedFail?: string | null
   network?: string
   ranAt?: string
+  ready?: boolean
   summary?: { pass: number; warn: number; fail: number; skip: number }
+  mode?: 'doctor' | 'payload'
 }
 
 const STATUS_META: Record<
   CheckResult['status'],
-  { label: string; Icon: typeof CheckCircle; chip: string; bar: string }
+  { label: string; Icon: typeof CheckCircle; chip: string }
 > = {
   pass: {
     label: 'PASS',
     Icon: CheckCircle,
     chip: 'border-pass/35 bg-pass/10 text-pass',
-    bar: 'bg-pass',
   },
   warn: {
     label: 'WARN',
     Icon: WarningCircle,
     chip: 'border-warn/35 bg-warn/10 text-warn',
-    bar: 'bg-warn',
   },
   fail: {
     label: 'FAIL',
     Icon: XCircle,
     chip: 'border-fail/40 bg-fail/10 text-fail',
-    bar: 'bg-fail',
   },
   skip: {
     label: 'SKIP',
     Icon: MinusCircle,
     chip: 'border-border bg-surface-2 text-text-dim',
-    bar: 'bg-skip',
   },
 }
 
@@ -61,6 +62,10 @@ const PHASE_BLURB: Record<RailPhase, string> = {
   Gas: 'Fee data for deploy estimation',
   Explorer: 'ConfluxScan verify API reachability',
   Verify: 'Payload fields ConfluxScan will accept',
+}
+
+function focusPayload() {
+  document.getElementById('verify-payload')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
 function fixHint(check: CheckResult): string | null {
@@ -83,7 +88,30 @@ function fixHint(check: CheckResult): string | null {
   return check.detail ?? null
 }
 
-function CheckCard({ check, index }: { check: CheckResult; index: number }) {
+function MetaTable({ meta }: { meta: Record<string, string | number | boolean | null> }) {
+  const rows = Object.entries(meta)
+  if (!rows.length) return null
+  return (
+    <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 rounded border border-border/70 bg-surface-0/40 px-2.5 py-2 font-mono text-[10px]">
+      {rows.map(([k, v]) => (
+        <div key={k} className="contents">
+          <dt className="text-text-dim">{k}</dt>
+          <dd className="truncate text-text">{String(v)}</dd>
+        </div>
+      ))}
+    </dl>
+  )
+}
+
+function CheckCard({
+  check,
+  index,
+  onFocusPayload,
+}: {
+  check: CheckResult
+  index: number
+  onFocusPayload?: () => void
+}) {
   const meta = STATUS_META[check.status]
   const Icon = meta.Icon
   const hint = fixHint(check)
@@ -91,6 +119,8 @@ function CheckCard({ check, index }: { check: CheckResult; index: number }) {
     typeof window !== 'undefined' &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches
   const isHot = check.status === 'fail' || check.status === 'warn'
+  const payloadFix =
+    check.id.startsWith('verify-') && (check.status === 'fail' || check.status === 'warn')
 
   return (
     <motion.article
@@ -127,6 +157,7 @@ function CheckCard({ check, index }: { check: CheckResult; index: number }) {
             >
               {meta.label}
             </span>
+            <span className="font-mono text-[10px] text-text-dim">{check.id}</span>
             {check.durationMs != null && (
               <span className="ml-auto inline-flex items-center gap-1 font-mono text-[11px] tabular-nums text-text-dim">
                 <Clock size={11} />
@@ -140,34 +171,34 @@ function CheckCard({ check, index }: { check: CheckResult; index: number }) {
               {check.detail}
             </p>
           )}
-          {check.meta && Object.keys(check.meta).length > 0 && (
-            <div className="mt-2 flex flex-wrap gap-1.5">
-              {Object.entries(check.meta).map(([k, v]) => (
-                <span
-                  key={k}
-                  className="rounded border border-border bg-surface-2 px-1.5 py-0.5 font-mono text-[10px] text-text-dim"
-                >
-                  {k}={String(v)}
-                </span>
-              ))}
-            </div>
-          )}
+          {check.meta && <MetaTable meta={check.meta} />}
           {hint && isHot && (
             <div className="mt-2.5 flex gap-2 rounded-md border border-border/70 bg-surface-0/50 px-2.5 py-2">
               <Lightbulb size={14} className="mt-0.5 shrink-0 text-accent" weight="fill" />
               <div className="min-w-0">
                 <p className="font-mono text-[10px] uppercase tracking-wider text-accent">Fix</p>
                 <p className="mt-0.5 text-xs leading-relaxed text-text-muted">{hint}</p>
-                {check.id === 'verify-evmversion' && (
-                  <a
-                    href={LINKS.confluxSkillsIssue}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-1.5 inline-flex items-center gap-1 text-[11px] text-accent hover:underline"
-                  >
-                    conflux-skills #5 <ArrowSquareOut size={11} />
-                  </a>
-                )}
+                <div className="mt-1.5 flex flex-wrap items-center gap-3">
+                  {payloadFix && onFocusPayload && (
+                    <button
+                      type="button"
+                      onClick={onFocusPayload}
+                      className="font-mono text-[11px] text-accent hover:underline"
+                    >
+                      Open payload editor →
+                    </button>
+                  )}
+                  {check.id === 'verify-evmversion' && (
+                    <a
+                      href={LINKS.confluxSkillsIssue}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1 text-[11px] text-accent hover:underline"
+                    >
+                      conflux-skills #5 <ArrowSquareOut size={11} />
+                    </a>
+                  )}
+                </div>
               </div>
             </div>
           )}
@@ -181,12 +212,18 @@ function PhaseBlock({
   phase,
   checks,
   startIndex,
+  defaultCollapsed,
+  onFocusPayload,
 }: {
   phase: RailPhase
   checks: CheckResult[]
   startIndex: number
+  defaultCollapsed: boolean
+  onFocusPayload?: () => void
 }) {
+  const [open, setOpen] = useState(!defaultCollapsed)
   if (checks.length === 0) return null
+
   const worst = checks.some((c) => c.status === 'fail')
     ? 'fail'
     : checks.some((c) => c.status === 'warn')
@@ -194,12 +231,17 @@ function PhaseBlock({
       : checks.every((c) => c.status === 'skip')
         ? 'skip'
         : 'pass'
+  const elapsed = checks.reduce((s, c) => s + (c.durationMs ?? 0), 0)
 
   return (
     <div className="space-y-2.5">
-      <div className="flex items-center gap-3">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="flex w-full items-center gap-3 text-left"
+      >
         <span
-          className={`h-1.5 w-1.5 rounded-full ${
+          className={`h-1.5 w-1.5 shrink-0 rounded-full ${
             worst === 'fail'
               ? 'bg-fail'
               : worst === 'warn'
@@ -213,27 +255,54 @@ function PhaseBlock({
           <h3 className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-text">
             {phase}
           </h3>
+          <span
+            className={`rounded border px-1 py-px font-mono text-[9px] uppercase ${STATUS_META[worst].chip}`}
+          >
+            {STATUS_META[worst].label}
+          </span>
           <span className="truncate text-[11px] text-text-dim">{PHASE_BLURB[phase]}</span>
         </div>
         <span className="font-mono text-[10px] text-text-dim">
-          {checks.length} check{checks.length === 1 ? '' : 's'}
+          {checks.length} · {elapsed > 0 ? formatDuration(elapsed) : '—'}
         </span>
-      </div>
-      <div className="space-y-2 pl-1">
-        {checks.map((c, i) => (
-          <CheckCard key={`${c.id}-${i}`} check={c} index={startIndex + i} />
-        ))}
-      </div>
+        <CaretDown
+          size={12}
+          className={`shrink-0 text-text-dim transition-transform ${open ? 'rotate-180' : ''}`}
+        />
+      </button>
+      {open && (
+        <div className="space-y-2 pl-1">
+          {checks.map((c, i) => (
+            <CheckCard
+              key={`${c.id}-${i}`}
+              check={c}
+              index={startIndex + i}
+              onFocusPayload={onFocusPayload}
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }
 
-export function CheckStream({ checks, pinnedFail, network, ranAt, summary }: Props) {
+export function CheckStream({
+  checks,
+  pinnedFail,
+  network,
+  ranAt,
+  ready,
+  summary,
+  mode = 'doctor',
+}: Props) {
   let idx = 0
   const total = summary
     ? summary.pass + summary.warn + summary.fail + summary.skip
     : checks.length
   const failCheck = checks.find((c) => c.status === 'fail')
+  const hasFail = Boolean(summary?.fail || failCheck)
+  const failPhase = failCheck ? phaseForCheckId(failCheck.id) : null
+  const wall = checks.reduce((s, c) => s + (c.durationMs ?? 0), 0)
 
   return (
     <div className="space-y-5">
@@ -241,28 +310,16 @@ export function CheckStream({ checks, pinnedFail, network, ranAt, summary }: Pro
         <div className="overflow-hidden rounded-lg border border-border bg-surface-1">
           <div className="flex h-1.5 w-full">
             {summary.pass > 0 && (
-              <div
-                className="bg-pass transition-all"
-                style={{ width: `${(summary.pass / total) * 100}%` }}
-              />
+              <div className="bg-pass" style={{ width: `${(summary.pass / total) * 100}%` }} />
             )}
             {summary.warn > 0 && (
-              <div
-                className="bg-warn transition-all"
-                style={{ width: `${(summary.warn / total) * 100}%` }}
-              />
+              <div className="bg-warn" style={{ width: `${(summary.warn / total) * 100}%` }} />
             )}
             {summary.fail > 0 && (
-              <div
-                className="bg-fail transition-all"
-                style={{ width: `${(summary.fail / total) * 100}%` }}
-              />
+              <div className="bg-fail" style={{ width: `${(summary.fail / total) * 100}%` }} />
             )}
             {summary.skip > 0 && (
-              <div
-                className="bg-skip transition-all"
-                style={{ width: `${(summary.skip / total) * 100}%` }}
-              />
+              <div className="bg-skip" style={{ width: `${(summary.skip / total) * 100}%` }} />
             )}
           </div>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 px-3 py-2.5 font-mono text-[11px]">
@@ -270,6 +327,12 @@ export function CheckStream({ checks, pinnedFail, network, ranAt, summary }: Pro
             <span className="text-warn">{summary.warn} warn</span>
             <span className="text-fail">{summary.fail} fail</span>
             <span className="text-skip">{summary.skip} skip</span>
+            {ready != null && (
+              <span className={ready ? 'text-pass' : 'text-fail'}>
+                ready={String(ready)}
+              </span>
+            )}
+            {wall > 0 && <span className="text-text-dim">{formatDuration(wall)} probes</span>}
             {(network || ranAt) && (
               <span className="ml-auto text-text-dim">
                 {network}
@@ -289,18 +352,30 @@ export function CheckStream({ checks, pinnedFail, network, ranAt, summary }: Pro
               <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-fail">
                 Blocked · gate closed
               </p>
+              <p className="mt-1 font-mono text-[10px] text-text-dim">
+                {failCheck.id}
+                {failPhase ? ` · phase ${failPhase}` : ''}
+              </p>
               <p className="mt-1 text-sm font-medium text-text">{failCheck.name}</p>
               <p className="mt-0.5 text-sm text-text-muted">{failCheck.message}</p>
-              {failCheck.id === 'verify-evmversion' && (
-                <p className="mt-2 text-xs text-text-dim">
-                  Omit <code className="font-mono text-warn">evmVersion</code> (or set a concrete
-                  version) and re-run to open the gate.
-                </p>
+              {failCheck.id.startsWith('verify-') && (
+                <button
+                  type="button"
+                  onClick={focusPayload}
+                  className="mt-2 font-mono text-[11px] text-accent hover:underline"
+                >
+                  Open payload · fix field →
+                </button>
               )}
             </div>
           </div>
         </div>
       )}
+
+      <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-text-dim">
+        {total} checks · mode={mode}
+        {hasFail ? ' · passing phases collapsed' : ''}
+      </p>
 
       <div className="space-y-6">
         {RAIL_PHASES.map((phase) => {
@@ -311,7 +386,6 @@ export function CheckStream({ checks, pinnedFail, network, ranAt, summary }: Pro
                 ? checks.filter((c) => c.id === 'rpc-chain-id')
                 : checksForPhase(phase, checks)
 
-          // When chainId matched inside RPC check, still show a Chain pass card.
           if (phase === 'Chain' && phaseChecks.length === 0) {
             const rpc = checks.find((c) => c.id === 'rpc-reachability' && c.status !== 'fail')
             if (rpc?.meta?.chainId != null) {
@@ -333,8 +407,16 @@ export function CheckStream({ checks, pinnedFail, network, ranAt, summary }: Pro
 
           const start = idx
           idx += phaseChecks.length
+          const phaseHot = phaseChecks.some((c) => c.status === 'fail' || c.status === 'warn')
           return (
-            <PhaseBlock key={phase} phase={phase} checks={phaseChecks} startIndex={start} />
+            <PhaseBlock
+              key={phase}
+              phase={phase}
+              checks={phaseChecks}
+              startIndex={start}
+              defaultCollapsed={hasFail && !phaseHot}
+              onFocusPayload={focusPayload}
+            />
           )
         })}
       </div>

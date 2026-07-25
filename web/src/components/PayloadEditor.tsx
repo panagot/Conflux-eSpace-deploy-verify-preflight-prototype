@@ -68,7 +68,7 @@ export function PayloadEditor({
   }, [jsonError])
 
   return (
-    <section className="space-y-3">
+    <section id="verify-payload" className="scroll-mt-24 space-y-3">
       <div className="flex items-center justify-between">
         <h2 className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-text-dim">
           Verify payload

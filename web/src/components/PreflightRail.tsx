@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import type { CheckResult } from '../types'
 import {
@@ -5,6 +6,7 @@ import {
   getActivePhase,
   phaseStatus,
   checksForPhase,
+  formatDuration,
   type RailPhase,
 } from '../lib/checkPhases'
 
@@ -30,6 +32,22 @@ const statusFill: Record<string, string> = {
   fail: 'bg-fail/20',
 }
 
+const connectorColor: Record<string, string> = {
+  idle: 'border-t border-dashed border-text-dim/30',
+  active: 'bg-accent/50',
+  pass: 'bg-pass/55',
+  warn: 'bg-warn/55',
+  fail: 'bg-fail/55',
+}
+
+const PHASE_HINT: Record<RailPhase, string> = {
+  RPC: 'endpoint',
+  Chain: 'chainId',
+  Gas: 'fees',
+  Explorer: 'scan API',
+  Verify: 'payload',
+}
+
 function PhaseNode({
   phase,
   status,
@@ -46,7 +64,7 @@ function PhaseNode({
     window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
   return (
-    <div className="flex flex-1 flex-col items-center gap-2" title={message}>
+    <div className="flex flex-1 flex-col items-center gap-1.5" title={message ?? PHASE_HINT[phase]}>
       <motion.div
         initial={reduceMotion ? false : { scale: 0.92, opacity: 0.6 }}
         animate={{ scale: 1, opacity: 1 }}
@@ -58,13 +76,36 @@ function PhaseNode({
           <span className="absolute inset-0 animate-ping rounded-full border border-accent opacity-30" />
         )}
       </motion.div>
-      <span className="font-mono text-[10px] uppercase tracking-wider text-text-dim">{phase}</span>
+      <span
+        className={`font-mono text-[10px] uppercase tracking-wider ${
+          status === 'active' ? 'text-accent' : 'text-text-dim'
+        }`}
+      >
+        {phase}
+      </span>
+      <span className="hidden text-[9px] text-text-dim sm:block">{PHASE_HINT[phase]}</span>
     </div>
   )
 }
 
 export function PreflightRail({ checks, loading, empty }: Props) {
-  const activePhase = getActivePhase(checks, loading)
+  const [stagedIdx, setStagedIdx] = useState(0)
+
+  useEffect(() => {
+    if (!loading) {
+      setStagedIdx(0)
+      return
+    }
+    setStagedIdx(0)
+    const t = window.setInterval(() => {
+      setStagedIdx((i) => (i < RAIL_PHASES.length - 1 ? i + 1 : i))
+    }, 650)
+    return () => window.clearInterval(t)
+  }, [loading])
+
+  const activePhase = loading
+    ? RAIL_PHASES[stagedIdx]
+    : getActivePhase(checks, loading)
 
   if (empty && !loading) {
     return (
@@ -80,7 +121,10 @@ export function PreflightRail({ checks, loading, empty }: Props) {
           ))}
         </div>
         <p className="mt-4 text-center text-sm text-text-muted">
-          No preflight run yet. Select testnet and execute preflight.
+          No preflight run yet — pick a network and run preflight.
+        </p>
+        <p className="mt-1 text-center font-mono text-[10px] text-text-dim">
+          RPC → Chain → Gas → Explorer → Verify
         </p>
       </div>
     )
@@ -90,27 +134,27 @@ export function PreflightRail({ checks, loading, empty }: Props) {
     <div className="rounded-lg border border-border bg-surface-1 px-4 py-6 md:px-8">
       <div className="flex items-start">
         {RAIL_PHASES.map((phase, i) => {
-          const status = phaseStatus(phase, checks, loading, activePhase)
+          let status = phaseStatus(phase, checks, loading, activePhase)
+          // While loading with empty checks, mark prior stages as soft-pass (queued through)
+          if (loading && checks.length === 0) {
+            const idx = RAIL_PHASES.indexOf(phase)
+            if (idx < stagedIdx) status = 'pass'
+            else if (idx === stagedIdx) status = 'active'
+            else status = 'idle'
+          }
+
           const phaseChecks = checksForPhase(phase, checks)
-          const failMsg = phaseChecks.find((c) => c.status === 'fail')?.message
+          const fail = phaseChecks.find((c) => c.status === 'fail')
+          const tip = fail
+            ? `${fail.message}${fail.durationMs != null ? ` · ${formatDuration(fail.durationMs)}` : ''}`
+            : undefined
 
           return (
             <div key={phase} className="flex flex-1 items-start">
-              <PhaseNode
-                phase={phase}
-                status={status}
-                message={failMsg}
-                index={i}
-              />
+              <PhaseNode phase={phase} status={status} message={tip} index={i} />
               {i < RAIL_PHASES.length - 1 && (
                 <div className="mt-5 flex-1 px-1">
-                  <div
-                    className={`h-px w-full ${
-                      status === 'pass' || status === 'warn' || status === 'fail'
-                        ? 'bg-border'
-                        : 'border-t border-dashed border-text-dim/30'
-                    }`}
-                  />
+                  <div className={`h-px w-full ${connectorColor[status] ?? connectorColor.idle}`} />
                 </div>
               )}
             </div>

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { GitBranch, List, Terminal, BookOpen, CaretDown } from '@phosphor-icons/react'
+import { BrandMark } from './BrandMark'
 import { LINKS } from '../lib/links'
 import { MILESTONES } from '../lib/milestones'
 import type { NetworkInfo } from '../types'
@@ -23,38 +24,36 @@ export function TopBar({ network, selected }: Props) {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-surface-0/92 backdrop-blur-md">
       <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-4 py-3.5 md:px-8">
-        <Link to="/" className="flex min-w-0 items-center gap-3 transition-opacity hover:opacity-90">
-          <div
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-accent/35 bg-accent/10 text-accent"
-            aria-hidden
-          >
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none">
-              <path
-                d="M4 18 L12 4 L20 18"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinejoin="round"
-              />
-              <path d="M7 14 H17" stroke="currentColor" strokeWidth="1.5" />
-              <circle cx="12" cy="14" r="1.5" fill="currentColor" />
-            </svg>
-          </div>
+        <Link to="/" className="group flex min-w-0 items-center gap-3 transition-opacity hover:opacity-95">
+          <BrandMark
+            size={40}
+            className="shrink-0 shadow-[0_0_0_1px_oklch(0.72_0.14_175_/_0.12)] transition-transform group-hover:scale-[1.03]"
+          />
           <div className="min-w-0">
-            <div className="flex items-baseline gap-2">
-              <span className="text-base font-semibold tracking-tight text-text">VerifyFlow</span>
-              <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-text-dim">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+              <span className="text-[1.05rem] font-semibold tracking-tight text-text">
+                VerifyFlow
+              </span>
+              <span className="rounded border border-border/80 bg-surface-1 px-1.5 py-px font-mono text-[9px] uppercase tracking-[0.16em] text-text-dim">
                 CFX-01
               </span>
             </div>
-            <p className="truncate text-xs text-text-muted">eSpace deploy &amp; verify preflight</p>
+            <p className="mt-0.5 truncate font-mono text-[10px] leading-snug tracking-wide text-text-dim">
+              deploy · verify · preflight
+            </p>
           </div>
         </Link>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <span className="hidden items-center gap-1.5 rounded-md border border-accent/30 bg-accent/8 px-2.5 py-1 font-mono text-xs text-accent sm:inline-flex">
-            <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden />
-            chainId {chainId}
-          </span>
+          <div className="hidden flex-col items-end sm:flex">
+            <span className="inline-flex items-center gap-1.5 rounded-md border border-accent/30 bg-accent/8 px-2.5 py-1 font-mono text-xs text-accent">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_6px_oklch(0.72_0.14_175)]" aria-hidden />
+              chainId {chainId}
+            </span>
+            <span className="mt-0.5 font-mono text-[9px] uppercase tracking-wider text-text-dim">
+              {network === 'mainnet' ? 'eSpace mainnet' : 'eSpace testnet'}
+            </span>
+          </div>
 
           <nav className="flex items-center gap-0.5 text-sm sm:gap-1">
             <Link to="/" className={`hidden rounded-md px-2.5 py-1.5 sm:inline ${navClass('/')}`}>

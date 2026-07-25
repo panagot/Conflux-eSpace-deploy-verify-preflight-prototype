@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import type { DoctorReport } from '../types'
 
 type Props = {
@@ -6,17 +7,32 @@ type Props = {
 }
 
 export function ReadyGate({ report, loading }: Props) {
+  const [elapsed, setElapsed] = useState(0)
+
+  useEffect(() => {
+    if (!loading) {
+      setElapsed(0)
+      return
+    }
+    setElapsed(0)
+    const t = window.setInterval(() => setElapsed((e) => e + 1), 1000)
+    return () => window.clearInterval(t)
+  }, [loading])
+
   if (loading) {
     return (
-      <div className="flex items-center gap-3">
-        <svg viewBox="0 0 80 32" className="h-8 w-20 text-text-dim" fill="none">
-          <path d="M4 16 H76" stroke="currentColor" strokeWidth="1" strokeDasharray="4 4" />
-          <path d="M4 8 V24" stroke="currentColor" strokeWidth="1" />
-          <path d="M76 8 V24" stroke="currentColor" strokeWidth="1" />
-        </svg>
-        <span className="font-mono text-xs uppercase tracking-[0.2em] text-text-dim">
-          Running…
-        </span>
+      <div className="flex flex-col items-end gap-1">
+        <div className="flex items-center gap-3">
+          <svg viewBox="0 0 80 32" className="h-8 w-20 text-accent/50" fill="none">
+            <path d="M4 16 H76" stroke="currentColor" strokeWidth="1" strokeDasharray="4 4" />
+            <path d="M4 8 V24" stroke="currentColor" strokeWidth="1" />
+            <path d="M76 8 V24" stroke="currentColor" strokeWidth="1" />
+          </svg>
+          <span className="font-mono text-xs uppercase tracking-[0.18em] text-accent">
+            Gate · evaluating
+          </span>
+        </div>
+        <span className="font-mono text-[10px] tabular-nums text-text-dim">{elapsed}.0s</span>
       </div>
     )
   }
@@ -48,6 +64,11 @@ export function ReadyGate({ report, loading }: Props) {
       {ready && warnCount > 0 && (
         <span className="font-mono text-[10px] text-warn">
           {warnCount} warning{warnCount > 1 ? 's' : ''} — review before mainnet
+        </span>
+      )}
+      {!ready && (
+        <span className="font-mono text-[10px] text-fail/80">
+          ready=false · fail={report.summary.fail}
         </span>
       )}
     </div>

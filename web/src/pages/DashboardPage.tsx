@@ -6,7 +6,8 @@ import { PayloadEditor } from '../components/PayloadEditor'
 import { PreflightRail } from '../components/PreflightRail'
 import { CheckStream } from '../components/CheckStream'
 import { ReadyGate } from '../components/ReadyGate'
-import { Skeleton } from '../components/Skeleton'
+import { RunActivity } from '../components/RunActivity'
+import { RunMeta } from '../components/RunMeta'
 import { Tooltip } from '../components/Tooltip'
 import { LINKS } from '../lib/links'
 
@@ -32,6 +33,11 @@ export function DashboardPage() {
   } = useDoctorContext()
 
   const pinnedFail = report && !report.ready ? firstFailMessage(report.checks) : null
+  const chainId = selected?.chainId ?? (network === 'mainnet' ? 1030 : 71)
+  const rpcLabel = (rpcUrl.trim() || selected?.defaultRpc || 'default RPC').replace(
+    /^https?:\/\//,
+    '',
+  )
 
   return (
     <>
@@ -111,13 +117,13 @@ export function DashboardPage() {
 
           <div className="border-t border-border pt-5">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-              <h2 className="flex items-center gap-2 text-sm font-semibold text-text">
-                {mode === 'payload' && report ? 'Payload lint' : 'Results stream'}
+              <h2 className="flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-[0.12em] text-text">
+                {mode === 'payload' && report ? 'Lint log' : 'Preflight log'}
                 <Tooltip
                   content={
                     <>
-                      Actionable check output. Failures block deploy; warnings should be reviewed
-                      before mainnet. See{' '}
+                      Probe output. Failures block deploy; warnings should be reviewed before
+                      mainnet. See{' '}
                       <a
                         href={LINKS.confluxSkillsIssue}
                         target="_blank"
@@ -125,24 +131,37 @@ export function DashboardPage() {
                         className="text-accent underline"
                       >
                         conflux-skills #5
-                      </a>{' '}
-                      for verify quirks.
+                      </a>
+                      .
                     </>
                   }
                 />
               </h2>
             </div>
 
-            {loading && <Skeleton />}
+            {loading && (
+              <RunActivity
+                mode={mode}
+                network={network}
+                chainId={chainId}
+                rpcLabel={rpcLabel}
+                includePayload={includePayload}
+              />
+            )}
 
             {!loading && report && (
-              <CheckStream
-                checks={report.checks}
-                pinnedFail={pinnedFail}
-                network={report.network}
-                ranAt={report.ranAt}
-                summary={report.summary}
-              />
+              <div className="space-y-4">
+                <RunMeta report={report} mode={mode} chainId={chainId} />
+                <CheckStream
+                  checks={report.checks}
+                  pinnedFail={pinnedFail}
+                  network={report.network}
+                  ranAt={report.ranAt}
+                  ready={report.ready}
+                  summary={report.summary}
+                  mode={mode}
+                />
+              </div>
             )}
 
             {!loading && !report && (

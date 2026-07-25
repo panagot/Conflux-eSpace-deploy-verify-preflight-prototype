@@ -68,6 +68,13 @@ export function firstFailMessage(checks: CheckResult[]): string | null {
   return fail ? `${fail.name}: ${fail.message}` : null
 }
 
+export function phaseForCheckId(id: string): RailPhase | null {
+  for (const phase of RAIL_PHASES) {
+    if (PHASE_IDS[phase].includes(id)) return phase
+  }
+  return null
+}
+
 export function formatDuration(ms: number): string {
   return `${ms.toLocaleString('en-US')}ms`
 }
