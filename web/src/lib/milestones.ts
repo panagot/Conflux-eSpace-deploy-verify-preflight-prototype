@@ -22,18 +22,19 @@ export const MILESTONES: Milestone[] = [
     payout: 1000,
     status: 'current',
     summary:
-      'Ship the working preflight stack: CLI doctor, REST API, and grant-ready dashboard demo.',
+      'Ship the working preflight stack: live web demo, REST API, and doctor engine. CLI packaging completes this tranche.',
     deliverables: [
-      'verifyflow doctor — RPC, chainId, gas, ConfluxScan API checks',
+      'Doctor engine — RPC, chainId, gas, ConfluxScan API checks',
       'ConfluxScan verify-payload linter (evmVersion, compiler, optimizer)',
-      'Web dashboard with preflight rail + Monaco JSON editor',
-      'Public localhost demo + README quickstart',
-      'Forum-ready grant proposal assets',
+      'Web dashboard — preflight rail, Monaco editor, Ready/Blocked gate',
+      'Live public demo + Usage guide + REST /api/doctor',
+      'CLI packaging (verifyflow doctor) to finish M0',
+      'Forum application + reviewer FAQ on the demo',
     ],
     kpi: [
       'Demo runs end-to-end on testnet without manual RPC setup',
       'Known-bad payload (evmVersion=default) surfaces as BLOCKED',
-      'CLI exits non-zero on failure for CI readiness',
+      'Packaged CLI exits non-zero on failure for CI readiness',
     ],
   },
   {

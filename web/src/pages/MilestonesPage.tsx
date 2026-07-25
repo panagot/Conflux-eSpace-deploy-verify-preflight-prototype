@@ -20,8 +20,8 @@ export function MilestonesPage() {
         <p className="mt-3 max-w-[65ch] text-sm leading-relaxed text-text-muted">
           Total ask: <strong className="text-text">${GRANT.totalAsk.toLocaleString()}</strong> paid in
           CFX across three equal tranches. Each milestone unlocks the next payment on verified
-          delivery. M2 completion closes the grant with a public website and one full year of
-          open-source support.
+          delivery. Public MIT repo and npm packages ship at funded kickoff; M2 closes with the
+          official site and 12 months of maintenance.
         </p>
       </header>
 
@@ -101,7 +101,7 @@ export function MilestonesPage() {
         <ol className="mt-4 space-y-3 text-sm text-text-muted">
           <li>
             <strong className="font-mono text-accent">$1,000</strong> — Grant approval / M0 delivery
-            (prototype demo, CLI, API, dashboard — current state)
+            (live demo + API + dashboard now; CLI packaging to complete the tranche)
           </li>
           <li>
             <strong className="font-mono text-accent">$1,000</strong> — M1 accepted (Hardhat plugin +
@@ -115,15 +115,19 @@ export function MilestonesPage() {
       </div>
 
       <p className="mt-8 text-center text-xs text-text-dim">
-        Apply via{' '}
-        <a href={LINKS.grantsForum} target="_blank" rel="noreferrer" className="text-accent hover:underline">
-          forum.conflux.fun
-        </a>{' '}
-        using the{' '}
-        <a href={LINKS.grantsTemplate} target="_blank" rel="noreferrer" className="text-accent hover:underline">
-          Integration Grants template
+        Application under review —{' '}
+        <a
+          href={LINKS.grantsForumApp}
+          target="_blank"
+          rel="noreferrer"
+          className="text-accent hover:underline"
+        >
+          forum thread
         </a>
-        .
+        {' · '}
+        <a href={LINKS.grantsOverview} target="_blank" rel="noreferrer" className="text-accent hover:underline">
+          Integration Grants overview
+        </a>
       </p>
     </main>
   )
