@@ -5,7 +5,7 @@ import type { CheckResult } from '../types.js'
 export async function checkRpcReachability(
   rpcUrl: string,
   network: NetworkConfig,
-): Promise<CheckResult> {
+): Promise<CheckResult[]> {
   const start = Date.now()
   const provider = new JsonRpcProvider(rpcUrl, network.chainId, { staticNetwork: true })
   try {
@@ -18,39 +18,55 @@ export async function checkRpcReachability(
     const durationMs = Date.now() - start
     const chainOk = chainId === network.chainId
 
-    if (!chainOk) {
-      return {
-        id: 'rpc-chain-id',
-        name: 'RPC chain ID',
-        status: 'fail',
-        message: `Wrong chainId: got ${chainId}, expected ${network.chainId} (${network.label})`,
-        detail: 'Point MetaMask / Hardhat at the correct eSpace network before deploy.',
-        durationMs,
-        meta: { reportedChainId: chainId, expectedChainId: network.chainId, blockNumber },
-      }
-    }
-
-    return {
+    const reachability: CheckResult = {
       id: 'rpc-reachability',
       name: 'RPC reachability',
       status: durationMs > 3000 ? 'warn' : 'pass',
       message:
         durationMs > 3000
           ? `RPC responded in ${durationMs}ms (elevated latency)`
-          : `RPC healthy — block ${blockNumber}, chainId ${chainId}`,
+          : `RPC healthy — block ${blockNumber}`,
       detail: networkVersion != null ? `net_version: ${networkVersion}` : undefined,
       durationMs,
       meta: { blockNumber, chainId, latencyMs: durationMs },
     }
-  } catch (err) {
-    return {
-      id: 'rpc-reachability',
-      name: 'RPC reachability',
-      status: 'fail',
-      message: `RPC unreachable: ${err instanceof Error ? err.message : String(err)}`,
-      detail: 'Verify URL, firewall, and that HTTP/WebSocket ports are open for self-hosted nodes.',
-      durationMs: Date.now() - start,
+
+    if (!chainOk) {
+      return [
+        reachability,
+        {
+          id: 'rpc-chain-id',
+          name: 'RPC chain ID',
+          status: 'fail',
+          message: `Wrong chainId: got ${chainId}, expected ${network.chainId} (${network.label})`,
+          detail:
+            'Point Fluent / MetaMask / Hardhat at the correct eSpace network (71 testnet, 1030 mainnet) before deploy.',
+          durationMs,
+          meta: { reportedChainId: chainId, expectedChainId: network.chainId, blockNumber },
+        },
+      ]
     }
+
+    return [
+      {
+        ...reachability,
+        message:
+          durationMs > 3000
+            ? `RPC responded in ${durationMs}ms (elevated latency)`
+            : `RPC healthy — block ${blockNumber}, chainId ${chainId}`,
+      },
+    ]
+  } catch (err) {
+    return [
+      {
+        id: 'rpc-reachability',
+        name: 'RPC reachability',
+        status: 'fail',
+        message: `RPC unreachable: ${err instanceof Error ? err.message : String(err)}`,
+        detail: 'Verify URL, firewall, and that HTTP/WebSocket ports are open for self-hosted nodes.',
+        durationMs: Date.now() - start,
+      },
+    ]
   } finally {
     provider.destroy()
   }
@@ -122,8 +138,8 @@ export async function checkExplorerApi(network: NetworkConfig): Promise<CheckRes
       id: 'explorer-api',
       name: 'ConfluxScan API',
       status: 'pass',
-      message: 'ConfluxScan API reachable (verify endpoint available)',
-      detail: network.explorer,
+      message: 'ConfluxScan API reachable',
+      detail: `Probed ${network.explorerApi} (stats/ethsupply). Field lint is local; verify submit stays on ConfluxScan.`,
       durationMs,
     }
   } catch (err) {

@@ -54,7 +54,7 @@ export function Footer() {
               </li>
               <li>
                 <span className="text-xs text-text-dim">
-                  Public MIT repo ships at funded kickoff
+                  Public MIT repo ships with funded M2
                 </span>
               </li>
             </ul>

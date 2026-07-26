@@ -35,7 +35,7 @@ export function NetworkControl({
     <section className="space-y-3">
       <h2 className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-text-dim">
         Network
-        <Tooltip content="eSpace mainnet chainId 1030, testnet 71. Must match your Hardhat network and MetaMask before deploy." />
+        <Tooltip content="eSpace mainnet chainId 1030, testnet 71 (hex 0x addresses — not Core Space / CIP-37). Must match Fluent, MetaMask, or Hardhat before deploy." />
       </h2>
 
       <div className="flex rounded-md border border-border bg-surface-2 p-0.5">

@@ -33,7 +33,7 @@ function answer(q: string): string {
     return '1) Pick <b>Testnet 71</b> (safe). 2) Keep or edit the sample payload. 3) Click <b>Run preflight</b>. 4) Read the rail + results. If Verify fails on <code>evmVersion</code>, remove that field and re-run to see <b>READY</b>.'
   }
   if (/(grant|milestone|budget|3000|funding|m0|m1|m2)/.test(t)) {
-    return 'Integration Grants ask: <b>$3,000</b> in three $1,000 milestones. <b>M0</b> live demo + core (this site). <b>M1</b> Hardhat plugin + verify dry-run. <b>M2</b> GitHub Action, official site, 12-month OSS maintenance. Details on the <a href="/milestones">Milestones</a> page or the <a href="' +
+    return 'Integration Grants ask: <b>$3,000</b> in three $1,000 milestones. <b>M0</b> live demo + API (CLI packaging remaining). <b>M1</b> Hardhat plugin + verify dry-run. <b>M2</b> GitHub Action, public repo, official site, 12-month OSS maintenance. Details on the <a href="/milestones">Milestones</a> page or the <a href="' +
       LINKS.grantsForumApp +
       '" target="_blank" rel="noreferrer">forum application</a>.'
   }

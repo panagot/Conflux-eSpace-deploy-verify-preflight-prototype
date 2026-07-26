@@ -19,9 +19,12 @@ export function MilestonesPage() {
         </h1>
         <p className="mt-3 max-w-[65ch] text-sm leading-relaxed text-text-muted">
           Total ask: <strong className="text-text">${GRANT.totalAsk.toLocaleString()}</strong> paid in
-          CFX across three equal tranches. Each milestone unlocks the next payment on verified
-          delivery. Public MIT repo and npm packages ship at funded kickoff; M2 closes with the
-          official site and 12 months of maintenance.
+          CFX across three equal tranches. Live demo + API are available now; CLI packaging finishes
+          M0. Hardhat/npm land in M1; public MIT repo + official site close M2 with 12 months of
+          maintenance.
+        </p>
+        <p className="mt-2 font-mono text-[11px] text-text-dim">
+          M0 in progress — demo/API live · CLI remaining
         </p>
       </header>
 
@@ -79,12 +82,12 @@ export function MilestonesPage() {
                 </div>
                 <div>
                   <h3 className="font-mono text-[10px] uppercase tracking-wider text-text-dim">
-                    Acceptance KPIs
+                    Acceptance targets
                   </h3>
                   <ul className="mt-2 space-y-1.5 text-sm text-text-muted">
                     {m.kpi.map((k) => (
                       <li key={k} className="flex gap-2">
-                        <span className="text-pass">✓</span>
+                        <span className="text-text-dim">○</span>
                         {k}
                       </li>
                     ))}

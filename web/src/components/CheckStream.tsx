@@ -395,7 +395,7 @@ export function CheckStream({
                   name: 'RPC chain ID',
                   status: 'pass',
                   message: `chainId ${rpc.meta.chainId} matches selected network`,
-                  detail: 'Aligned with Hardhat / MetaMask eSpace target.',
+                  detail: 'Aligned with Fluent / MetaMask / Hardhat eSpace target.',
                   meta: {
                     chainId: rpc.meta.chainId,
                     expectedChainId: rpc.meta.chainId,

@@ -45,15 +45,15 @@ export function TopBar({ network, selected }: Props) {
         </Link>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <div className="hidden flex-col items-end sm:flex">
-            <span className="inline-flex items-center gap-1.5 rounded-md border border-accent/30 bg-accent/8 px-2.5 py-1 font-mono text-xs text-accent">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_6px_oklch(0.72_0.14_175)]" aria-hidden />
-              chainId {chainId}
-            </span>
-            <span className="mt-0.5 font-mono text-[9px] uppercase tracking-wider text-text-dim">
-              {network === 'mainnet' ? 'eSpace mainnet' : 'eSpace testnet'}
-            </span>
-          </div>
+          <span
+            className="hidden items-center gap-1.5 self-center rounded-md border border-accent/30 bg-accent/8 px-2.5 py-1.5 font-mono text-xs text-accent sm:inline-flex"
+            title={network === 'mainnet' ? 'Conflux eSpace mainnet' : 'Conflux eSpace testnet'}
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_6px_oklch(0.72_0.14_175)]" aria-hidden />
+            <span className="text-text-dim">{network === 'mainnet' ? 'mainnet' : 'testnet'}</span>
+            <span className="text-text-dim/50">·</span>
+            <span>{chainId}</span>
+          </span>
 
           <nav className="flex items-center gap-0.5 text-sm sm:gap-1">
             <Link to="/" className={`hidden rounded-md px-2.5 py-1.5 sm:inline ${navClass('/')}`}>

@@ -100,10 +100,10 @@ export function lintVerifyPayload(input: VerifyPayloadInput): CheckResult[] {
   results.push({
     id: 'verify-bytecode-tip',
     name: 'Bytecode alignment',
-    status: 'pass',
-    message: 'Compare creation bytecode from compiler output to on-chain code before verify',
+    status: 'skip',
+    message: 'Advisory: compare creation bytecode to on-chain code before ConfluxScan verify',
     detail:
-      'Deployment and verification must use the same compiler version, optimizer runs, and evm settings. Hardhat config alone is not proof.',
+      'Not auto-checked yet. Deploy and verify must use the same compiler version, optimizer runs, and evm settings. Hardhat config alone is not proof.',
   })
 
   return results

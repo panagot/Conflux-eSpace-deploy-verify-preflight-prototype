@@ -21,7 +21,7 @@ VerifyFlow runs a **preflight checklist** against live infrastructure before you
 | **RPC reachability** | Block number, latency, endpoint health |
 | **Chain ID** | Must match eSpace mainnet `1030` or testnet `71` |
 | **Gas / fee data** | `gasPrice` availability for deploy estimation |
-| **ConfluxScan API** | Explorer verify endpoint reachability |
+| **ConfluxScan API** | Explorer API reachability (stats probe) |
 | **Verify payload lint** | Compiler version, optimizer flags, known ConfluxScan rejections |
 
 ---
@@ -180,7 +180,7 @@ VerifyFlow is a prototype for [Conflux Integration Grants](https://confluxnetwor
 
 | Milestone | Payout | Deliverable |
 |-----------|--------|-------------|
-| **M0** · Prototype | $1,000 | CLI, API, dashboard — **current** |
+| **M0** · Prototype | $1,000 | Live demo + API + dashboard now; CLI packaging to complete |
 | **M1** · Hardhat | $1,000 | `@verifyflow/hardhat` plugin, verify dry-run, npm publish |
 | **M2** · CI + support | $1,000 | GitHub Action, official site, 12-month OSS maintenance |
 

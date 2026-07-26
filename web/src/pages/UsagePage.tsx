@@ -34,7 +34,7 @@ const CHECKS = [
   {
     icon: MagnifyingGlass,
     title: 'ConfluxScan API',
-    detail: 'Explorer verify endpoint alive',
+    detail: 'Explorer API reachable (stats probe)',
   },
   {
     icon: FileCode,
@@ -193,8 +193,9 @@ export function UsagePage() {
           <h1 className="mt-2 text-3xl font-semibold tracking-tight text-text">Usage guide</h1>
           <p className="mt-3 max-w-[58ch] text-sm leading-relaxed text-text-muted">
             Validate Conflux eSpace RPC, chainId, and ConfluxScan verify fields <em>before</em> you
-            deploy. Start on the live dashboard, then wire{' '}
-            <code className="font-mono text-xs text-accent">/api/doctor</code> into CI. CLI and
+            deploy. Does not deploy contracts or submit ConfluxScan verification — you keep your own
+            tooling. eSpace only (chainId 71 / 1030, hex addresses); not Core Space / CIP-37. Wire{' '}
+            <code className="font-mono text-xs text-accent">/api/doctor</code> into CI; CLI and
             Hardhat land with funded milestones.
           </p>
         </div>
@@ -309,11 +310,11 @@ export function UsagePage() {
               </p>
             </div>
             <pre className="flex-1 overflow-x-auto px-5 py-4 font-mono text-[11px] leading-relaxed text-text-muted">
-{`POST /api/doctor
-{
-  "network": "testnet",
-  "verifyPayload": { … }
-}
+{`# Live origin (expect ready:false on sample)
+curl -s -X POST \\
+  https://conflux-e-space-deploy-verify-prefl-gamma.vercel.app/api/doctor \\
+  -H "Content-Type: application/json" \\
+  -d '{"network":"testnet","verifyPayload":{"compilerVersion":"v0.8.24+commit.e11b9ed9","optimizationUsed":true,"runs":200,"contractName":"MyToken","evmVersion":"default"}}'
 
 POST /api/lint-payload
 { "raw": "{…}" }`}
