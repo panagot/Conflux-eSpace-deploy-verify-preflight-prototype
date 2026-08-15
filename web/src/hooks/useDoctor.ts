@@ -9,6 +9,27 @@ export const SAMPLE_PAYLOAD = `{
   "evmVersion": "default"
 }`
 
+/** Same sample without the known ConfluxScan reject. */
+export const SAMPLE_PAYLOAD_PASS = `{
+  "compilerVersion": "v0.8.24+commit.e11b9ed9",
+  "optimizationUsed": true,
+  "runs": 200,
+  "contractName": "MyToken"
+}`
+
+function stripDefaultEvmVersion(raw: string): string {
+  try {
+    const parsed = JSON.parse(raw) as Record<string, unknown>
+    const evm = parsed.evmVersion
+    if (typeof evm === 'string' && evm.toLowerCase() === 'default') {
+      delete parsed.evmVersion
+    }
+    return JSON.stringify(parsed, null, 2)
+  } catch {
+    return SAMPLE_PAYLOAD_PASS
+  }
+}
+
 export function useDoctor() {
   const [networks, setNetworks] = useState<NetworkInfo[]>([])
   const [network, setNetwork] = useState('testnet')
@@ -81,7 +102,7 @@ export function useDoctor() {
       setReport(data)
       setMode('doctor')
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Run failed')
+      setError(e instanceof Error ? e.message : 'Preflight failed')
     } finally {
       setLoading(false)
     }
@@ -150,14 +171,8 @@ export function useDoctor() {
     setError(null)
   }, [])
 
-  const runFailDemo = useCallback(async () => {
-    setPayloadRaw(SAMPLE_PAYLOAD)
-    setIncludePayload(true)
-    setJsonError(null)
-    setLoading(true)
-    setError(null)
-    try {
-      const verifyPayload = JSON.parse(SAMPLE_PAYLOAD) as Record<string, unknown>
+  const postDoctor = useCallback(
+    async (verifyPayload: Record<string, unknown> | undefined) => {
       const res = await fetch('/api/doctor', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -174,12 +189,40 @@ export function useDoctor() {
       const data = (await res.json()) as DoctorReport
       setReport(data)
       setMode('doctor')
+    },
+    [network, rpcUrl],
+  )
+
+  const runFailDemo = useCallback(async () => {
+    setPayloadRaw(SAMPLE_PAYLOAD)
+    setIncludePayload(true)
+    setJsonError(null)
+    setLoading(true)
+    setError(null)
+    try {
+      await postDoctor(JSON.parse(SAMPLE_PAYLOAD) as Record<string, unknown>)
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Run failed')
+      setError(e instanceof Error ? e.message : 'Preflight failed')
     } finally {
       setLoading(false)
     }
-  }, [network, rpcUrl])
+  }, [postDoctor])
+
+  const applyConfluxScanFix = useCallback(async () => {
+    const next = stripDefaultEvmVersion(payloadRaw)
+    setPayloadRaw(next)
+    setIncludePayload(true)
+    setJsonError(null)
+    setLoading(true)
+    setError(null)
+    try {
+      await postDoctor(JSON.parse(next) as Record<string, unknown>)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Preflight failed')
+    } finally {
+      setLoading(false)
+    }
+  }, [payloadRaw, postDoctor])
 
   return {
     networks,
@@ -202,5 +245,6 @@ export function useDoctor() {
     validateJson,
     loadFailDemo,
     runFailDemo,
+    applyConfluxScanFix,
   }
 }

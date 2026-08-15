@@ -37,10 +37,20 @@ export function ReadyGate({ report, loading }: Props) {
     )
   }
 
-  if (!report) return null
+  if (!report) {
+    return (
+      <div className="flex flex-col items-end gap-1">
+        <span className="font-mono text-sm uppercase tracking-[0.2em] text-text-dim">
+          Awaiting
+        </span>
+        <span className="font-mono text-[10px] text-text-dim">no run yet</span>
+      </div>
+    )
+  }
 
   const ready = report.ready
   const warnCount = report.summary.warn
+  const failCount = report.summary.fail
 
   return (
     <div className="flex flex-col items-end gap-1">
@@ -63,12 +73,15 @@ export function ReadyGate({ report, loading }: Props) {
       </div>
       {ready && warnCount > 0 && (
         <span className="font-mono text-[10px] text-warn">
-          {warnCount} warning{warnCount > 1 ? 's' : ''} — review before mainnet
+          {warnCount} warning{warnCount > 1 ? 's' : ''} to review before mainnet
         </span>
+      )}
+      {ready && warnCount === 0 && (
+        <span className="font-mono text-[10px] text-pass/80">ready for deploy + verify</span>
       )}
       {!ready && (
         <span className="font-mono text-[10px] text-fail/80">
-          ready=false · fail={report.summary.fail}
+          {failCount} blocking issue{failCount === 1 ? '' : 's'}
         </span>
       )}
     </div>

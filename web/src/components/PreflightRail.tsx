@@ -108,23 +108,39 @@ export function PreflightRail({ checks, loading, empty }: Props) {
     : getActivePhase(checks, loading)
 
   if (empty && !loading) {
+    const previewStatus = (phase: RailPhase) => (phase === 'Verify' ? 'fail' : 'pass')
     return (
-      <div className="rounded-lg border border-dashed border-border bg-surface-1/50 px-6 py-10">
-        <div className="flex items-center justify-center gap-2 opacity-40">
-          {RAIL_PHASES.map((phase, i) => (
-            <div key={phase} className="flex items-center">
-              <div className="h-8 w-8 rounded-full border border-dashed border-text-dim/40" />
-              {i < RAIL_PHASES.length - 1 && (
-                <div className="mx-1 h-px w-6 border-t border-dashed border-text-dim/30 md:w-12" />
-              )}
-            </div>
-          ))}
-        </div>
-        <p className="mt-4 text-center text-sm text-text-muted">
-          No preflight run yet — pick a network and run preflight.
+      <div className="rounded-lg border border-border bg-surface-1 px-4 py-6 md:px-8">
+        <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.14em] text-text-dim">
+          Sample outcome · run preflight for live Conflux probes
         </p>
-        <p className="mt-1 text-center font-mono text-[10px] text-text-dim">
-          RPC → Chain → Gas → Explorer → Verify
+        <div className="flex items-start opacity-90">
+          {RAIL_PHASES.map((phase, i) => {
+            const status = previewStatus(phase)
+            return (
+              <div key={phase} className="flex flex-1 items-start">
+                <PhaseNode
+                  phase={phase}
+                  status={status}
+                  message={
+                    phase === 'Verify'
+                      ? 'evmVersion default is a known ConfluxScan reject'
+                      : undefined
+                  }
+                  index={i}
+                />
+                {i < RAIL_PHASES.length - 1 && (
+                  <div className="mt-5 flex-1 px-1">
+                    <div className={`h-px w-full ${connectorColor[status]}`} />
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
+        <p className="mt-5 text-center text-sm text-text-muted">
+          Live RPC, chainId, gas, and ConfluxScan checks. The sample payload is built to fail Verify
+          so you can see the gate close.
         </p>
       </div>
     )

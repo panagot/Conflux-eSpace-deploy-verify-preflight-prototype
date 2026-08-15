@@ -56,16 +56,33 @@ export function PayloadEditor({
           endColumn: model.getLineMaxColumn(model.getLineCount()),
         },
       ])
-    } else {
-      monaco.editor.setModelMarkers(model, 'json', [])
+      return
     }
+    const text = model.getValue()
+    const match = text.match(/"evmVersion"\s*:\s*"default"/i)
+    if (match && match.index != null) {
+      const start = model.getPositionAt(match.index)
+      const end = model.getPositionAt(match.index + match[0].length)
+      monaco.editor.setModelMarkers(model, 'json', [
+        {
+          severity: monaco.MarkerSeverity.Warning,
+          message: 'ConfluxScan rejects evmVersion "default" (conflux-skills #5)',
+          startLineNumber: start.lineNumber,
+          startColumn: start.column,
+          endLineNumber: end.lineNumber,
+          endColumn: end.column,
+        },
+      ])
+      return
+    }
+    monaco.editor.setModelMarkers(model, 'json', [])
   }
 
   useEffect(() => {
     if (monacoRef.current && editorRef.current) {
       applyMarkers(monacoRef.current, editorRef.current)
     }
-  }, [jsonError])
+  }, [jsonError, value])
 
   return (
     <section id="verify-payload" className="scroll-mt-24 space-y-3">

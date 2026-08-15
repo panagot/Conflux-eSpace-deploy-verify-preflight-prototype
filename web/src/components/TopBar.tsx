@@ -39,7 +39,7 @@ export function TopBar({ network, selected }: Props) {
               </span>
             </div>
             <p className="mt-0.5 truncate font-mono text-[10px] leading-snug tracking-wide text-text-dim">
-              deploy · verify · preflight
+              eSpace · verify preflight
             </p>
           </div>
         </Link>

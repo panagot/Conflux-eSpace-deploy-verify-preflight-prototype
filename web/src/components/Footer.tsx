@@ -54,7 +54,7 @@ export function Footer() {
               </li>
               <li>
                 <span className="text-xs text-text-dim">
-                  Public MIT repo ships with funded M2
+                  Demo + API live. CLI packaging is the remaining M0 item.
                 </span>
               </li>
             </ul>

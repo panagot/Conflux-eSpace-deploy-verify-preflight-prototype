@@ -27,10 +27,10 @@ function answer(q: string): string {
   if (/(blocked|evmversion|default|fail|red|rejection|conflux-skills)/.test(t)) {
     return 'The sample payload includes <code>evmVersion: "default"</code>, which ConfluxScan rejects (see <a href="' +
       LINKS.confluxSkillsIssue +
-      '" target="_blank" rel="noreferrer">conflux-skills #5</a>). Click <b>Run preflight</b> with the sample payload — Verify should go red and the gate shows <b>BLOCKED</b>. Fix: omit <code>evmVersion</code> unless you used a concrete version (e.g. paris, cancun).'
+      '" target="_blank" rel="noreferrer">conflux-skills #5</a>). Run the sample: Verify goes red and the gate shows <b>BLOCKED</b>. Click <b>Apply ConfluxScan fix and re-run</b> (it removes that field) to see <b>READY</b>.'
   }
   if (/(try|demo|how to|start|run|preflight)/.test(t)) {
-    return '1) Pick <b>Testnet 71</b> (safe). 2) Keep or edit the sample payload. 3) Click <b>Run preflight</b>. 4) Read the rail + results. If Verify fails on <code>evmVersion</code>, remove that field and re-run to see <b>READY</b>.'
+    return '1) Keep the sample payload. 2) Click <b>Run sample preflight</b>. 3) Verify fails on <code>evmVersion: "default"</code>. 4) Click <b>Apply ConfluxScan fix and re-run</b> to see <b>READY</b>.'
   }
   if (/(grant|milestone|budget|3000|funding|m0|m1|m2)/.test(t)) {
     return 'Integration Grants ask: <b>$3,000</b> in three $1,000 milestones. <b>M0</b> live demo + API (CLI packaging remaining). <b>M1</b> Hardhat plugin + verify dry-run. <b>M2</b> GitHub Action, public repo, official site, 12-month OSS maintenance. Details on the <a href="/milestones">Milestones</a> page or the <a href="' +
@@ -41,7 +41,7 @@ function answer(q: string): string {
     return '<b>ConfluxScan</b> verifies after deploy. <b>Hardhat</b> is generic EVM. VerifyFlow is Conflux-aware <b>pre-deploy</b> QA (chainId 71/1030 + ConfluxScan field quirks). Complementary — it does not submit verify or hold keys.'
   }
   if (/(github|source|repo|open source|mit|code)/.test(t)) {
-    return 'MIT-licensed open source. Full public GitHub + npm packages ship with funded milestones (M0 CLI packaging / M2 open repo cadence). Reviewers can use this live demo + REST API now; source is available to the committee on request per the grant application.'
+    return 'MIT-licensed. This live demo and REST API are the public review surface. CLI packaging is the remaining M0 item; a public GitHub repo is planned with later milestones. The working tree is available to the committee on request.'
   }
   if (/(api|curl|ci|json|rest)/.test(t)) {
     return 'REST: <code>POST /api/doctor</code> (full preflight) and <code>POST /api/lint-payload</code> (fields only). See the <a href="/usage">Usage</a> page for copy-paste bodies. Lint alone is enough to catch <code>evmVersion=default</code> without hitting RPC.'

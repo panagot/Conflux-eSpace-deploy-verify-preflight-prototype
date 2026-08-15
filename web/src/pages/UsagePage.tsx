@@ -195,8 +195,8 @@ export function UsagePage() {
             Validate Conflux eSpace RPC, chainId, and ConfluxScan verify fields <em>before</em> you
             deploy. Does not deploy contracts or submit ConfluxScan verification — you keep your own
             tooling. eSpace only (chainId 71 / 1030, hex addresses); not Core Space / CIP-37. Wire{' '}
-            <code className="font-mono text-xs text-accent">/api/doctor</code> into CI; CLI and
-            Hardhat land with funded milestones.
+            <code className="font-mono text-xs text-accent">/api/doctor</code> into CI. CLI
+            packaging is the remaining M0 item; Hardhat plugin is M1.
           </p>
         </div>
         <div className="flex flex-wrap gap-2 lg:justify-end">
@@ -336,7 +336,7 @@ POST /api/lint-payload
                 </span>
               </div>
               <p className="mt-2 text-xs leading-relaxed text-text-muted">
-                Exit-code gate for terminals. Ships with funded M0 packaging.
+                Exit-code gate for terminals. Packaging is the remaining M0 item.
               </p>
             </div>
             <pre className="flex-1 overflow-x-auto px-5 py-4 font-mono text-[11px] leading-relaxed text-text-dim">

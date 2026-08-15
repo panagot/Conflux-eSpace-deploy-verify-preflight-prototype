@@ -28,6 +28,7 @@ type Props = {
   ready?: boolean
   summary?: { pass: number; warn: number; fail: number; skip: number }
   mode?: 'doctor' | 'payload'
+  onApplyFix?: () => void
 }
 
 const STATUS_META: Record<
@@ -107,10 +108,12 @@ function CheckCard({
   check,
   index,
   onFocusPayload,
+  onApplyFix,
 }: {
   check: CheckResult
   index: number
   onFocusPayload?: () => void
+  onApplyFix?: () => void
 }) {
   const meta = STATUS_META[check.status]
   const Icon = meta.Icon
@@ -157,7 +160,11 @@ function CheckCard({
             >
               {meta.label}
             </span>
-            <span className="font-mono text-[10px] text-text-dim">{check.id}</span>
+            {check.id === 'verify-bytecode-tip' ? (
+              <span className="font-mono text-[10px] text-text-dim">manual check (post-deploy)</span>
+            ) : (
+              <span className="font-mono text-[10px] text-text-dim">{check.id}</span>
+            )}
             {check.durationMs != null && (
               <span className="ml-auto inline-flex items-center gap-1 font-mono text-[11px] tabular-nums text-text-dim">
                 <Clock size={11} />
@@ -179,13 +186,22 @@ function CheckCard({
                 <p className="font-mono text-[10px] uppercase tracking-wider text-accent">Fix</p>
                 <p className="mt-0.5 text-xs leading-relaxed text-text-muted">{hint}</p>
                 <div className="mt-1.5 flex flex-wrap items-center gap-3">
+                  {check.id === 'verify-evmversion' && onApplyFix && (
+                    <button
+                      type="button"
+                      onClick={onApplyFix}
+                      className="font-mono text-[11px] text-pass hover:underline"
+                    >
+                      Apply ConfluxScan fix and re-run
+                    </button>
+                  )}
                   {payloadFix && onFocusPayload && (
                     <button
                       type="button"
                       onClick={onFocusPayload}
                       className="font-mono text-[11px] text-accent hover:underline"
                     >
-                      Open payload editor →
+                      Open payload editor
                     </button>
                   )}
                   {check.id === 'verify-evmversion' && (
@@ -214,12 +230,14 @@ function PhaseBlock({
   startIndex,
   defaultCollapsed,
   onFocusPayload,
+  onApplyFix,
 }: {
   phase: RailPhase
   checks: CheckResult[]
   startIndex: number
   defaultCollapsed: boolean
   onFocusPayload?: () => void
+  onApplyFix?: () => void
 }) {
   const [open, setOpen] = useState(!defaultCollapsed)
   if (checks.length === 0) return null
@@ -278,6 +296,7 @@ function PhaseBlock({
               check={c}
               index={startIndex + i}
               onFocusPayload={onFocusPayload}
+              onApplyFix={onApplyFix}
             />
           ))}
         </div>
@@ -294,6 +313,7 @@ export function CheckStream({
   ready,
   summary,
   mode = 'doctor',
+  onApplyFix,
 }: Props) {
   let idx = 0
   const total = summary
@@ -329,7 +349,7 @@ export function CheckStream({
             <span className="text-skip">{summary.skip} skip</span>
             {ready != null && (
               <span className={ready ? 'text-pass' : 'text-fail'}>
-                ready={String(ready)}
+                {ready ? 'gate open' : 'gate closed'}
               </span>
             )}
             {wall > 0 && <span className="text-text-dim">{formatDuration(wall)} probes</span>}
@@ -358,22 +378,33 @@ export function CheckStream({
               </p>
               <p className="mt-1 text-sm font-medium text-text">{failCheck.name}</p>
               <p className="mt-0.5 text-sm text-text-muted">{failCheck.message}</p>
-              {failCheck.id.startsWith('verify-') && (
-                <button
-                  type="button"
-                  onClick={focusPayload}
-                  className="mt-2 font-mono text-[11px] text-accent hover:underline"
-                >
-                  Open payload · fix field →
-                </button>
-              )}
+              <div className="mt-2 flex flex-wrap gap-3">
+                {failCheck.id === 'verify-evmversion' && onApplyFix && (
+                  <button
+                    type="button"
+                    onClick={onApplyFix}
+                    className="font-mono text-[11px] text-pass hover:underline"
+                  >
+                    Apply ConfluxScan fix and re-run
+                  </button>
+                )}
+                {failCheck.id.startsWith('verify-') && (
+                  <button
+                    type="button"
+                    onClick={focusPayload}
+                    className="font-mono text-[11px] text-accent hover:underline"
+                  >
+                    Open payload editor
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>
       )}
 
       <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-text-dim">
-        {total} checks · mode={mode}
+        {total} checks · {mode === 'payload' ? 'lint only' : 'full preflight'}
         {hasFail ? ' · passing phases collapsed' : ''}
       </p>
 
@@ -416,6 +447,7 @@ export function CheckStream({
               startIndex={start}
               defaultCollapsed={hasFail && !phaseHot}
               onFocusPayload={focusPayload}
+              onApplyFix={onApplyFix}
             />
           )
         })}
