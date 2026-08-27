@@ -14,6 +14,7 @@ import {
   WarningCircle,
 } from '@phosphor-icons/react'
 import { LINKS } from '../lib/links'
+import { CopyCurlBlock } from '../components/CopyCurlBlock'
 
 const CHECKS = [
   {
@@ -194,9 +195,10 @@ export function UsagePage() {
           <p className="mt-3 max-w-[58ch] text-sm leading-relaxed text-text-muted">
             Validate Conflux eSpace RPC, chainId, and ConfluxScan verify fields <em>before</em> you
             deploy. Does not deploy contracts or submit ConfluxScan verification — you keep your own
-            tooling. eSpace only (chainId 71 / 1030, hex addresses); not Core Space / CIP-37. Wire{' '}
-            <code className="font-mono text-xs text-accent">/api/doctor</code> into CI. CLI
-            packaging is the remaining M0 item; Hardhat plugin is M1.
+            tooling. eSpace only (chainId 71 / 1030, hex addresses); not Core Space / CIP-37. Use the
+            dashboard, <code className="font-mono text-xs text-accent">verifyflow doctor</code>, or{' '}
+            <code className="font-mono text-xs text-accent">/api/doctor</code> in CI. Hardhat plugin is
+            M1.
           </p>
         </div>
         <div className="flex flex-wrap gap-2 lg:justify-end">
@@ -271,7 +273,7 @@ export function UsagePage() {
               <ol className="space-y-2 text-xs text-text-muted">
                 <li className="flex gap-2">
                   <span className="font-mono text-accent">1</span>
-                  Open Dashboard → Run preflight
+                  Open Dashboard → Known-bad → Run sample preflight
                 </li>
                 <li className="flex gap-2">
                   <span className="font-mono text-accent">2</span>
@@ -309,45 +311,67 @@ export function UsagePage() {
                 Embed in CI — public RPC + ConfluxScan only. No keys.
               </p>
             </div>
-            <pre className="flex-1 overflow-x-auto px-5 py-4 font-mono text-[11px] leading-relaxed text-text-muted">
-{`# Live origin (expect ready:false on sample)
-curl -s -X POST \\
-  https://conflux-e-space-deploy-verify-prefl-gamma.vercel.app/api/doctor \\
-  -H "Content-Type: application/json" \\
-  -d '{"network":"testnet","verifyPayload":{"compilerVersion":"v0.8.24+commit.e11b9ed9","optimizationUsed":true,"runs":200,"contractName":"MyToken","evmVersion":"default"}}'
-
-POST /api/lint-payload
-{ "raw": "{…}" }`}
-            </pre>
+            <div className="flex flex-1 flex-col gap-3 px-5 py-4">
+              <CopyCurlBlock />
+              <p className="font-mono text-[11px] text-text-dim">Also: POST /api/lint-payload</p>
+            </div>
           </article>
 
           {/* CLI */}
-          <article className="flex flex-col rounded-xl border border-dashed border-border bg-surface-1/70">
+          <article className="flex flex-col rounded-xl border border-border bg-surface-1">
             <div className="border-b border-border px-5 py-4">
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-md border border-border bg-surface-2 text-text-muted">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-md border border-accent/30 bg-accent/10 text-accent">
                     <Terminal size={16} weight="duotone" />
                   </span>
                   <h3 className="text-sm font-semibold text-text">CLI</h3>
                 </div>
-                <span className="rounded border border-border px-1.5 py-0.5 font-mono text-[10px] text-text-dim">
-                  M0
+                <span className="rounded border border-pass/40 bg-pass/10 px-1.5 py-0.5 font-mono text-[10px] text-pass">
+                  LIVE
                 </span>
               </div>
               <p className="mt-2 text-xs leading-relaxed text-text-muted">
-                Exit-code gate for terminals. Packaging is the remaining M0 item.
+                Exit-code gate for terminals and CI. Non-zero when BLOCKED.
               </p>
             </div>
-            <pre className="flex-1 overflow-x-auto px-5 py-4 font-mono text-[11px] leading-relaxed text-text-dim">
-{`# After M0 packaging
-verifyflow doctor --network testnet
-verifyflow doctor --network mainnet \\
-  --payload ./verify.json
+            <pre className="flex-1 overflow-x-auto px-5 py-4 font-mono text-[11px] leading-relaxed text-text-muted">
+{`# from repo root
+npm run build:cli
+npx verifyflow doctor --network testnet \\
+  --payload examples/bad-verify.json
+# exit 1 = BLOCKED (evmVersion default)
 
-# exit 1 = any check failed`}
+npx verifyflow doctor --network testnet \\
+  --payload examples/good-verify.json
+# exit 0 when RPC + lint pass`}
             </pre>
           </article>
+        </div>
+      </section>
+
+      <section className="mt-12 rounded-xl border border-border bg-surface-1 p-5 md:p-6">
+        <h2 className="text-lg font-semibold text-text">Early adopters</h2>
+        <p className="mt-2 max-w-[62ch] text-sm text-text-muted">
+          No invented logos. When an eSpace team runs preflight and wants to be named, they land here
+          and in <code className="font-mono text-xs">docs/ADOPTERS.md</code>.
+        </p>
+        <div className="mt-4 rounded-lg border border-dashed border-border bg-surface-0/60 px-4 py-5">
+          <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-text-dim">
+            Slot open
+          </p>
+          <p className="mt-2 text-sm text-text-muted">
+            First real integration welcome — dashboard, CLI, or{' '}
+            <code className="font-mono text-xs">/api/doctor</code> in CI.
+          </p>
+          <a
+            href={LINKS.grantsForumApp}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-3 inline-flex items-center gap-1 text-xs text-accent hover:underline"
+          >
+            Reply on the grant thread <ArrowRight size={12} />
+          </a>
         </div>
       </section>
 

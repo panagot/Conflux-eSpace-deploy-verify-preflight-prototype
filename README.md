@@ -43,11 +43,11 @@ VerifyFlow runs a **preflight checklist** against live infrastructure before you
 git clone https://github.com/panagot/Conflux-eSpace-deploy-verify-preflight-prototype.git
 cd Conflux-eSpace-deploy-verify-preflight-prototype
 npm install
-npm run build:vercel
-npm run dev
+npm run build:cli
+npm run dev:stack
 ```
 
-Open **http://localhost:5180**
+Open **http://localhost:5180** (API on **http://localhost:8792**).
 
 | Page | URL |
 |------|-----|
@@ -55,7 +55,17 @@ Open **http://localhost:5180**
 | Usage guide | http://localhost:5180/usage |
 | Milestones | http://localhost:5180/milestones |
 
-Click **Run preflight** on testnet. The sample payload intentionally includes `evmVersion: "default"` — VerifyFlow flags this as a known [ConfluxScan rejection](https://github.com/conflux-fans/conflux-skills/issues/5).
+### CLI
+
+```bash
+# Known-bad payload → exit 1 (BLOCKED)
+npx verifyflow doctor --network testnet --payload examples/bad-verify.json
+
+# Known-good payload → exit 0 when RPC healthy
+npx verifyflow doctor --network testnet --payload examples/good-verify.json
+```
+
+On the dashboard: use **Known-bad payload** / **Known-good payload**, then **Run sample preflight**. Known-bad includes `evmVersion: "default"` — VerifyFlow flags this as a known [ConfluxScan rejection](https://github.com/conflux-fans/conflux-skills/issues/5).
 
 ---
 
@@ -159,6 +169,8 @@ See [Conflux RPC providers](https://doc.confluxnetwork.org/docs/espace/build/inf
 │       ├── checks/        RPC, verify-payload lint
 │       ├── networks.ts    chainId 71 / 1030 configs
 │       └── index.ts       runDoctor()
+├── cli/                   @verifyflow/cli — verifyflow doctor (exit codes)
+├── examples/              bad-verify.json / good-verify.json
 ├── web/                   React dashboard (Vite + Tailwind)
 │   ├── api/               Vercel serverless routes
 │   ├── core-dist/         Built core (generated at build, gitignored)
@@ -169,7 +181,7 @@ See [Conflux RPC providers](https://doc.confluxnetwork.org/docs/espace/build/inf
 │       └── hooks/         useDoctor (API client)
 ├── api/                   Root-level API routes (repo-root deploys)
 ├── vercel.json            Root deploy config (optional)
-└── package.json           npm workspaces: core + web
+└── package.json           npm workspaces: core + cli + web
 ```
 
 ---
@@ -180,7 +192,7 @@ VerifyFlow is a prototype for [Conflux Integration Grants](https://confluxnetwor
 
 | Milestone | Payout | Deliverable |
 |-----------|--------|-------------|
-| **M0** · Prototype | $1,000 | Live demo + API + dashboard now; CLI packaging to complete |
+| **M0** · Prototype | $1,000 | Live demo + API + dashboard + CLI (`verifyflow doctor`) |
 | **M1** · Hardhat | $1,000 | `@verifyflow/hardhat` plugin, verify dry-run, npm publish |
 | **M2** · CI + support | $1,000 | GitHub Action, official site, 12-month OSS maintenance |
 
@@ -236,6 +248,8 @@ No secrets required. All checks use public Conflux RPC and ConfluxScan API endpo
 
 | Resource | URL |
 |----------|-----|
+| **Source (GitHub)** | [github.com/panagot/Conflux-eSpace-deploy-verify-preflight-prototype](https://github.com/panagot/Conflux-eSpace-deploy-verify-preflight-prototype) |
+| **Demo / CLI proof** | [docs/DEMO.md](docs/DEMO.md) |
 | eSpace developer quickstart | [doc.confluxnetwork.org](https://doc.confluxnetwork.org/docs/espace/DeveloperQuickstart) |
 | ConfluxScan API | [doc.confluxnetwork.org](https://doc.confluxnetwork.org/docs/espace/build/infrastructure/confluxscan-api/) |
 | Integration grants forum | [forum.conflux.fun](https://forum.conflux.fun/c/English/grant-proposals) |

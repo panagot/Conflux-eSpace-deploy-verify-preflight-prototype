@@ -10,6 +10,8 @@ type Props = {
   jsonError: string | null
   includePayload: boolean
   onIncludeChange: (v: boolean) => void
+  onLoadKnownBad?: () => void
+  onLoadKnownGood?: () => void
 }
 
 function defineVerifyflowTheme(monaco: Monaco) {
@@ -38,6 +40,8 @@ export function PayloadEditor({
   jsonError,
   includePayload,
   onIncludeChange,
+  onLoadKnownBad,
+  onLoadKnownGood,
 }: Props) {
   const monacoRef = useRef<Monaco | null>(null)
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null)
@@ -86,7 +90,7 @@ export function PayloadEditor({
 
   return (
     <section id="verify-payload" className="scroll-mt-24 space-y-3">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
         <h2 className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-text-dim">
           Verify payload
           <Tooltip
@@ -94,7 +98,12 @@ export function PayloadEditor({
               <>
                 Fields submitted to ConfluxScan contract verification. Must match compiler output
                 exactly. See{' '}
-                <a href={LINKS.verifyContracts} target="_blank" rel="noreferrer" className="text-accent underline">
+                <a
+                  href={LINKS.verifyContracts}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-accent underline"
+                >
                   verify docs
                 </a>
                 .
@@ -112,6 +121,29 @@ export function PayloadEditor({
           Include in preflight
         </label>
       </div>
+
+      {(onLoadKnownBad || onLoadKnownGood) && (
+        <div className="flex flex-wrap gap-2">
+          {onLoadKnownBad && (
+            <button
+              type="button"
+              onClick={onLoadKnownBad}
+              className="rounded border border-fail/35 bg-fail/10 px-2.5 py-1 font-mono text-[10px] text-fail transition-colors hover:bg-fail/20"
+            >
+              Known-bad payload
+            </button>
+          )}
+          {onLoadKnownGood && (
+            <button
+              type="button"
+              onClick={onLoadKnownGood}
+              className="rounded border border-pass/35 bg-pass/10 px-2.5 py-1 font-mono text-[10px] text-pass transition-colors hover:bg-pass/20"
+            >
+              Known-good payload
+            </button>
+          )}
+        </div>
+      )}
 
       <div
         className={`overflow-hidden rounded-md border ${
@@ -152,8 +184,17 @@ export function PayloadEditor({
       )}
 
       <p className="text-[11px] text-text-dim">
-        Sample includes <code className="font-mono text-warn">evmVersion: &quot;default&quot;</code>{' '}
-        — known ConfluxScan rejection.
+        Known-bad includes <code className="font-mono text-warn">evmVersion: &quot;default&quot;</code>{' '}
+        — ConfluxScan rejection (
+        <a
+          href={LINKS.confluxSkillsIssue}
+          target="_blank"
+          rel="noreferrer"
+          className="text-accent hover:underline"
+        >
+          #5
+        </a>
+        ).
       </p>
     </section>
   )

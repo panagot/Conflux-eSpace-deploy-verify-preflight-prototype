@@ -30,10 +30,10 @@ function answer(q: string): string {
       '" target="_blank" rel="noreferrer">conflux-skills #5</a>). Run the sample: Verify goes red and the gate shows <b>BLOCKED</b>. Click <b>Apply ConfluxScan fix and re-run</b> (it removes that field) to see <b>READY</b>.'
   }
   if (/(try|demo|how to|start|run|preflight)/.test(t)) {
-    return '1) Keep the sample payload. 2) Click <b>Run sample preflight</b>. 3) Verify fails on <code>evmVersion: "default"</code>. 4) Click <b>Apply ConfluxScan fix and re-run</b> to see <b>READY</b>.'
+    return '1) Pick <b>Known-bad payload</b> or keep the sample. 2) Click <b>Run sample preflight</b>. 3) Verify fails on <code>evmVersion: "default"</code>. 4) Click <b>Apply ConfluxScan fix and re-run</b> — or switch <b>Known-good payload</b> — to see <b>READY</b>.'
   }
   if (/(grant|milestone|budget|3000|funding|m0|m1|m2)/.test(t)) {
-    return 'Integration Grants ask: <b>$3,000</b> in three $1,000 milestones. <b>M0</b> live demo + API (CLI packaging remaining). <b>M1</b> Hardhat plugin + verify dry-run. <b>M2</b> GitHub Action, public repo, official site, 12-month OSS maintenance. Details on the <a href="/milestones">Milestones</a> page or the <a href="' +
+    return 'Integration Grants ask: <b>$3,000</b> across M0–M2. <b>M0</b> live demo + API + <code>verifyflow doctor</code> CLI. <b>M1</b> Hardhat plugin. <b>M2</b> GitHub Action + official site + 12-month maintenance. Details on <a href="/milestones">Milestones</a> or the <a href="' +
       LINKS.grantsForumApp +
       '" target="_blank" rel="noreferrer">forum application</a>.'
   }
@@ -41,7 +41,12 @@ function answer(q: string): string {
     return '<b>ConfluxScan</b> verifies after deploy. <b>Hardhat</b> is generic EVM. VerifyFlow is Conflux-aware <b>pre-deploy</b> QA (chainId 71/1030 + ConfluxScan field quirks). Complementary — it does not submit verify or hold keys.'
   }
   if (/(github|source|repo|open source|mit|code)/.test(t)) {
-    return 'MIT-licensed. This live demo and REST API are the public review surface. CLI packaging is the remaining M0 item; a public GitHub repo is planned with later milestones. The working tree is available to the committee on request.'
+    return 'MIT-licensed on <a href="' +
+      LINKS.github +
+      '" target="_blank" rel="noreferrer">GitHub</a>. Demo, REST API, and CLI (<code>verifyflow doctor</code>) are the review surface. Clone the repo for <code>examples/bad-verify.json</code> and <code>npm run build:cli</code>.'
+  }
+  if (/(cli|terminal|exit|npx verifyflow)/.test(t)) {
+    return 'CLI is live: <code>npx verifyflow doctor --network testnet --payload examples/bad-verify.json</code> exits <b>1</b> on BLOCKED (e.g. <code>evmVersion: "default"</code>). Known-good payload exits <b>0</b> when RPC is healthy. See <a href="/usage">Usage</a>.'
   }
   if (/(api|curl|ci|json|rest)/.test(t)) {
     return 'REST: <code>POST /api/doctor</code> (full preflight) and <code>POST /api/lint-payload</code> (fields only). See the <a href="/usage">Usage</a> page for copy-paste bodies. Lint alone is enough to catch <code>evmVersion=default</code> without hitting RPC.'
@@ -84,7 +89,7 @@ export function AssistantFab() {
     if (!greeted) {
       setGreeted(true)
       push(
-        'Hi — I’m the VerifyFlow guide for reviewers and builders. Ask about the demo, why the sample is <b>BLOCKED</b>, who uses this, or the $3k milestones. Tap a question or type your own.',
+        'Hi — I’m the VerifyFlow guide. Ask about the demo, why the sample is <b>BLOCKED</b>, the CLI, or how to try preflight. Tap a question or type your own.',
       )
     }
   }

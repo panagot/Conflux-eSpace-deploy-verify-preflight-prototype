@@ -6,6 +6,7 @@
   "license": "MIT",
   "workspaces": [
     "core",
+    "cli",
     "web"
   ],
   "dependencies": {
@@ -16,6 +17,8 @@
   "scripts": {
     "build:vercel": "npm run build -w @verifyflow/core && node web/scripts/copy-core-dist.mjs && npm run build -w @verifyflow/web",
     "build": "npm run build:vercel",
+    "build:cli": "npm run build -w @verifyflow/core && npm run build -w @verifyflow/cli",
+    "verifyflow": "npm run build:cli && node cli/bin/verifyflow.js",
     "dev": "npm run build --workspace=core && npm run dev -w @verifyflow/web",
     "dev:api": "npm run build --workspace=core && node scripts/local-api.mjs",
     "dev:stack": "npm run build --workspace=core && npx concurrently -k \"node scripts/local-api.mjs\" \"npm run dev -w @verifyflow/web\"",

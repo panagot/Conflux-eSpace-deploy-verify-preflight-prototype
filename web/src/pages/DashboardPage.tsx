@@ -32,6 +32,8 @@ export function DashboardPage() {
     lintOnly,
     runFailDemo,
     applyConfluxScanFix,
+    loadFailDemo,
+    loadPassDemo,
   } = useDoctorContext()
 
   const pinnedFail = report && !report.ready ? firstFailMessage(report.checks) : null
@@ -58,13 +60,13 @@ export function DashboardPage() {
             Preflight before ConfluxScan verify
           </h1>
           <p className="mt-1.5 max-w-[68ch] text-sm text-text-muted">
-            Live RPC + explorer probes on chain 71 / 1030. No wallet, no deploy, no custody. The
-            sample JSON includes a known ConfluxScan reject so the first run shows BLOCKED.
+            Live RPC + explorer probes on chain 71 / 1030. No wallet, no deploy, no custody. Switch
+            known-bad / known-good payloads, then run preflight.
           </p>
           <ol className="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[11px] text-text-dim">
-            <li>1. Keep the sample</li>
+            <li>1. Pick known-bad or known-good</li>
             <li>2. Run preflight</li>
-            <li>3. Apply the ConfluxScan fix</li>
+            <li>3. Fix BLOCKED (or apply ConfluxScan fix)</li>
             <li>4. See READY</li>
           </ol>
         </div>
@@ -86,6 +88,8 @@ export function DashboardPage() {
             jsonError={jsonError}
             includePayload={includePayload}
             onIncludeChange={setIncludePayload}
+            onLoadKnownBad={loadFailDemo}
+            onLoadKnownGood={loadPassDemo}
           />
 
           <div className="flex flex-col gap-2">

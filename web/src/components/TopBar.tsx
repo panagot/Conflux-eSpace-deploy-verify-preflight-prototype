@@ -34,9 +34,6 @@ export function TopBar({ network, selected }: Props) {
               <span className="text-[1.05rem] font-semibold tracking-tight text-text">
                 VerifyFlow
               </span>
-              <span className="rounded border border-border/80 bg-surface-1 px-1.5 py-px font-mono text-[9px] uppercase tracking-[0.16em] text-text-dim">
-                CFX-01
-              </span>
             </div>
             <p className="mt-0.5 truncate font-mono text-[10px] leading-snug tracking-wide text-text-dim">
               eSpace · verify preflight
@@ -82,7 +79,7 @@ export function TopBar({ network, selected }: Props) {
               {milestonesOpen && (
                 <div className="absolute right-0 top-full z-50 mt-1 w-72 rounded-md border border-border bg-surface-1 p-2 shadow-xl">
                   <p className="px-2 py-1 font-mono text-[10px] uppercase tracking-wider text-text-dim">
-                    $3,000 grant · 3 × $1,000
+                    Roadmap
                   </p>
                   {MILESTONES.map((m) => (
                     <Link
@@ -93,7 +90,9 @@ export function TopBar({ network, selected }: Props) {
                     >
                       <div className="flex items-center justify-between">
                         <span className="font-mono text-xs text-accent">{m.id}</span>
-                        <span className="font-mono text-[10px] text-text-dim">${m.payout}</span>
+                        <span className="font-mono text-[10px] text-text-dim">
+                          {m.status === 'current' ? 'in progress' : m.status}
+                        </span>
                       </div>
                       <p className="mt-0.5 text-xs text-text-muted">{m.title}</p>
                     </Link>

@@ -1,0 +1,15 @@
+VerifyFlow — Conflux eSpace Testnet
+RPC: https://evmtestnet.confluxrpc.com
+
+gate: BLOCKED
+
+[PASS] RPC reachability: RPC healthy — block 260998664, chainId 71
+[PASS] Gas / fee data: gasPrice available (20000000000 wei)
+[PASS] ConfluxScan API: ConfluxScan API reachable
+[PASS] Compiler version: compilerVersion set (v0.8.24+commit.e11b9ed9)
+[FAIL] EVM version field: evmversion=default is rejected by ConfluxScan
+[PASS] Optimizer flag: optimizationUsed: true
+[PASS] Source / contract name: contractName: MyToken
+[SKIP] Bytecode alignment: Advisory: compare creation bytecode to on-chain code before ConfluxScan verify
+
+exit: 1

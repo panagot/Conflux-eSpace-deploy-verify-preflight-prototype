@@ -171,6 +171,13 @@ export function useDoctor() {
     setError(null)
   }, [])
 
+  const loadPassDemo = useCallback(() => {
+    setPayloadRaw(SAMPLE_PAYLOAD_PASS)
+    setIncludePayload(true)
+    setJsonError(null)
+    setError(null)
+  }, [])
+
   const postDoctor = useCallback(
     async (verifyPayload: Record<string, unknown> | undefined) => {
       const res = await fetch('/api/doctor', {
@@ -244,6 +251,7 @@ export function useDoctor() {
     lintOnly,
     validateJson,
     loadFailDemo,
+    loadPassDemo,
     runFailDemo,
     applyConfluxScanFix,
   }

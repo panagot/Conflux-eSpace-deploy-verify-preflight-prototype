@@ -1,0 +1,24 @@
+{
+  "name": "@verifyflow/cli",
+  "version": "0.1.0",
+  "description": "VerifyFlow CLI — Conflux eSpace deploy & verify preflight",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "verifyflow": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "node ./dist/index.js"
+  },
+  "dependencies": {
+    "@verifyflow/core": "0.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  }
+}

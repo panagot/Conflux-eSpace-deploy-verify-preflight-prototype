@@ -19,12 +19,11 @@ export function MilestonesPage() {
         </h1>
         <p className="mt-3 max-w-[65ch] text-sm leading-relaxed text-text-muted">
           Total ask: <strong className="text-text">${GRANT.totalAsk.toLocaleString()}</strong> paid in
-          CFX across three equal tranches. Live demo + API are available now; CLI packaging finishes
-          M0. Hardhat/npm land in M1; public MIT repo + official site close M2 with 12 months of
-          maintenance.
+          CFX across three equal tranches. M0 ships demo + API + <code className="font-mono text-xs">verifyflow doctor</code>.
+          Hardhat/npm land in M1; public MIT repo + official site close M2 with 12 months of maintenance.
         </p>
         <p className="mt-2 font-mono text-[11px] text-text-dim">
-          M0 in progress — demo/API live · CLI remaining
+          M0 deliverables shipped · grant application under review
         </p>
       </header>
 
@@ -104,7 +103,7 @@ export function MilestonesPage() {
         <ol className="mt-4 space-y-3 text-sm text-text-muted">
           <li>
             <strong className="font-mono text-accent">$1,000</strong> — Grant approval / M0 delivery
-            (live demo + API + dashboard now; CLI packaging to complete the tranche)
+            (live demo + API + dashboard + CLI)
           </li>
           <li>
             <strong className="font-mono text-accent">$1,000</strong> — M1 accepted (Hardhat plugin +

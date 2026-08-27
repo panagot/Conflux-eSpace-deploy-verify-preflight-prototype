@@ -12,6 +12,5 @@ export const LINKS = {
   grantsTemplate: 'https://forum.conflux.fun/t/integration-grants-application-template/20759',
   grantsProgram: 'https://confluxnetwork.org/en/developers/grants',
   confluxSkillsIssue: 'https://github.com/conflux-fans/conflux-skills/issues/5',
-  /** No public clone URL yet; point at the grant thread instead of a 404. */
-  github: 'https://forum.conflux.fun/t/integration-grants-application-26-verifyflow-conflux-espace-deploy-verify-preflight/23892',
+  github: 'https://github.com/panagot/Conflux-eSpace-deploy-verify-preflight-prototype',
 } as const

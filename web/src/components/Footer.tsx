@@ -1,11 +1,8 @@
 import { Link } from 'react-router-dom'
 import { GithubLogo, ArrowSquareOut } from '@phosphor-icons/react'
 import { LINKS } from '../lib/links'
-import { GRANT, MILESTONES } from '../lib/milestones'
 
 export function Footer() {
-  const current = MILESTONES.find((m) => m.status === 'current')
-
   return (
     <footer className="mt-auto border-t border-border bg-surface-1">
       <div className="mx-auto max-w-[1400px] px-4 py-10 md:px-8">
@@ -16,9 +13,7 @@ export function Footer() {
               Conflux eSpace deploy &amp; verify preflight. Catch RPC drift, chainId mismatches,
               and ConfluxScan verify mistakes before you burn a deployment cycle.
             </p>
-            <p className="mt-3 font-mono text-[11px] text-accent">
-              Grant ask: ${GRANT.totalAsk.toLocaleString()} · {GRANT.support}
-            </p>
+            <p className="mt-3 font-mono text-[11px] text-text-dim">MIT · CLI + dashboard + REST API</p>
           </div>
 
           <div>
@@ -38,8 +33,19 @@ export function Footer() {
               </li>
               <li>
                 <Link to="/milestones" className="transition-colors hover:text-accent">
-                  Milestones (M0–M2)
+                  Roadmap
                 </Link>
+              </li>
+              <li>
+                <a
+                  href={LINKS.github}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1 transition-colors hover:text-accent"
+                >
+                  <GithubLogo size={14} />
+                  Source (GitHub)
+                </a>
               </li>
               <li>
                 <a
@@ -48,14 +54,8 @@ export function Footer() {
                   rel="noreferrer"
                   className="inline-flex items-center gap-1 transition-colors hover:text-accent"
                 >
-                  <GithubLogo size={14} />
-                  Grant application
+                  Grant thread
                 </a>
-              </li>
-              <li>
-                <span className="text-xs text-text-dim">
-                  Demo + API live. CLI packaging is the remaining M0 item.
-                </span>
               </li>
             </ul>
           </div>
@@ -94,33 +94,13 @@ export function Footer() {
         </div>
 
         <div className="mt-8 flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex flex-wrap gap-2">
-            {MILESTONES.map((m) => (
-              <span
-                key={m.id}
-                className={`rounded border px-2 py-0.5 font-mono text-[10px] ${
-                  m.status === 'current'
-                    ? 'border-accent/40 bg-accent/10 text-accent'
-                    : m.status === 'complete'
-                      ? 'border-pass/40 text-pass'
-                      : 'border-border text-text-dim'
-                }`}
-              >
-                {m.id} {m.status === 'current' ? '●' : m.status === 'complete' ? '✓' : '○'}
-              </span>
-            ))}
-            {current && (
-              <span className="text-[11px] text-text-dim">— {current.title}</span>
-            )}
-          </div>
           <span className="font-mono text-[11px] text-text-dim">
             v0.1 · Conflux eSpace preflight
           </span>
+          <span className="font-mono text-[11px] text-text-dim">
+            Built by Panagiotis Pollis · MIT
+          </span>
         </div>
-
-        <p className="mt-4 text-center text-[10px] text-text-dim">
-          Built by Panagiotis Pollis · MIT License · Conflux Integration Grants CFX-01
-        </p>
       </div>
     </footer>
   )
