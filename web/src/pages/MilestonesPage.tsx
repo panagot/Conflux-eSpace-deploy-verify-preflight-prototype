@@ -127,6 +127,10 @@ export function MilestonesPage() {
           forum thread
         </a>
         {' · '}
+        <a href={LINKS.github} target="_blank" rel="noreferrer" className="text-accent hover:underline">
+          source
+        </a>
+        {' · '}
         <a href={LINKS.grantsOverview} target="_blank" rel="noreferrer" className="text-accent hover:underline">
           Integration Grants overview
         </a>
